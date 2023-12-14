@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require("cors")
+let DB =require('./db.config')
 
 const app = express()
 app.use(cors())
@@ -18,6 +19,11 @@ app.get('/connection', (req, res) => {
 app.get('/*', (req, res) => {
     res.status(501).send("What the hell are you doing !?!")
 })
-app.listen(process.env.SERVER_PORT, () => {
-    console.log(`App listenning on port ${process.env.SERVER_PORT}!`)
-})
+DB.authenticate()
+    .then( () => { console.log("Datatbase connection Ok")})
+    .then(() => {
+        app.listen(process.env.SERVER_PORT, () => {
+            console.log(`App listenning on port ${process.env.SERVER_PORT}!`)
+        })
+    })
+    .catch(error => console.log("database error", error))
