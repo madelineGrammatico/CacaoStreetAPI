@@ -3,7 +3,7 @@ const DB = require("../db.config")
 
 const User = DB.define("User", {
     id: {
-        type: DadaTypes.INTEGER(11),
+        type: DataTypes.INTEGER(11),
         primaryKey: true,
         autoIncrement: true
     },

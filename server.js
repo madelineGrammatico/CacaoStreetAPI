@@ -7,6 +7,9 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true}))
 
+const user_router = require("./routes/users")
+app.use('/users', user_router)
+
 app.get('/', (req, res) => {
     res.send("Home in progress")
 })
