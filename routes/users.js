@@ -24,7 +24,7 @@ router.get('/:id', (req, res) => {
             if((user === null)) {
                 return res.status(404).json({ message: "This user does not exist !"})
             }
-            return res.json({data: User})
+            return res.json({data: user})
         })
         .catch(err => res.status(500).json({ message: 'DataBase Error', error: err}))
 })
@@ -44,13 +44,14 @@ router.put('', (req, res) => {
 
             bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
                 .then(hash => {
-                    req.body.password.hash
+                    req.body.password = hash
+
+                    User.create(req.body)
+                    .then(user => res.json({message: "UserCreated", data: user}))
+                    .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
                 })
                 .catch(err => res.status(500))
 
-            User.create(req.body)
-                .then(user => res.json({message: "UserCreated, data: user"}))
-                .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
         })
         .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
 })
@@ -68,7 +69,7 @@ router.patch("/:id", (req, res) => {
                 return res.status(404).json({ message: "This user does not exist !"})
             }
 
-            User.update(req.body,  {where: {id: userId}})
+            User.update(req.body, {where: {id: userId}})
                 .then( user => res.json({ message: "User Updated", data: user }))
                 .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
         })
@@ -81,7 +82,7 @@ router.post("/untrash/:id", (req, res) => {
         return res.status(400).json({ message: "Missing parameter" })
     }
 
-    User.restore({ wher : {id: userId}})
+    User.restore({ where : {id: userId}})
         .then(() => { res.status(204).json({})})
         .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
 })
