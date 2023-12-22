@@ -24,4 +24,8 @@ const User = DB.define("User", {
     }
 },{ paranoid: true})
 
+// User.sync()
+// User.sync({ force: true })
+// User.sync({ alter: true })
+
 module.exports = User

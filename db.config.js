@@ -8,7 +8,8 @@ let sequelize = new Sequelize(
         logging: false
     }
 )
-sequelize.sync(err => {
-    console.log("Database Sync error", err)
+sequelize.sync((err) => {
+    console.log('Database Error', err)
 })
+
 module.exports = sequelize
