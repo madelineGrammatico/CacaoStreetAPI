@@ -29,7 +29,7 @@ router.get('/:id', (req, res) => {
         .catch(err => res.status(500).json({ message: 'DataBase Error', error: err}))
 })
 
-router.put('', (req, res) => {
+router.post('', (req, res) => {
     const {speudo, email, password } = req.body
 
     if(!speudo || !email || !password) {
@@ -75,7 +75,7 @@ router.patch("/:id", (req, res) => {
         })
         .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
 })
-router.post("/untrash/:id", (req, res) => {
+router.patch("/untrash/:id", (req, res) => {
     let userId = parseInt(req.params.id)
 
     if(!userId) {
