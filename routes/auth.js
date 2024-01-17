@@ -6,11 +6,11 @@ const User = require('../models/user')
 let router = express.Router()
 router.post('/login', (req, res) => {
     const {email, password} = req.body
-    if(email || password) {
+    if(!email || !password) {
         return res.status(400).json({message: "Bad email or password"})
     }
 
-    User.findOne({ where: {email: email, raw: true}})
+    User.findOne({ where: {email: email}, raw: true})
         .then(user => {
             if (user === null) {
                 return res.status(401).json({message: "This account does not exists !"})

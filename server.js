@@ -15,10 +15,6 @@ app.use('/users', user_router)
 app.get('/', (req, res) => {
     res.send("In progress")
 })
-app.get('/connection', (req, res) => {
-    res.send("Login and SignIn soon")
-})
-
 app.use('/auth', auth_router)
 app.get('/*', (req, res) => {
     res.status(501).send("What the hell are you doing !?!")
