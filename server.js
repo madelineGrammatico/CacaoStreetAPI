@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require("cors")
 let DB =require('./db.config')
+const checkTokenMiddleware = require('./jsonwebtoken/check')
 
 const app = express()
 app.use(cors())
@@ -10,7 +11,7 @@ app.use(express.urlencoded({ extended: true}))
 const user_router = require('./routes/users')
 const auth_router = require('./routes/auth')
 
-app.use('/users', user_router)
+app.use('/users',checkTokenMiddleware, user_router)
 
 app.get('/', (req, res) => {
     res.send("In progress")
