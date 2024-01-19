@@ -1,10 +1,11 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
 const User = require('../models/user')
+const checkTokenMiddleware = require('./jsonwebtoken/check')
 
 let router = express.Router()
 
-router.get('', (req, res) => {
+router.get('',checkTokenMiddleware, (req, res) => {
     User.findAll()
         .then( users => res.json({data: users}))
         .catch(err => {
@@ -13,7 +14,7 @@ router.get('', (req, res) => {
         })
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:id',checkTokenMiddleware, (req, res) => {
     let userId = parseInt(req.params.id)
     if(!userId) {
         return res.json(400).jsonp({ message: "Missing Parameter"})
@@ -56,7 +57,7 @@ router.post('', (req, res) => {
         .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
 })
 
-router.patch("/:id", (req, res) => {
+router.patch("/:id",checkTokenMiddleware, (req, res) => {
     let userId = parseInt(req.params.id)
 
     if(!userId) {
@@ -75,7 +76,7 @@ router.patch("/:id", (req, res) => {
         })
         .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
 })
-router.patch("/untrash/:id", (req, res) => {
+router.patch("/untrash/:id",checkTokenMiddleware, (req, res) => {
     let userId = parseInt(req.params.id)
 
     if(!userId) {
@@ -86,7 +87,7 @@ router.patch("/untrash/:id", (req, res) => {
         .then(() => { res.status(204).json({})})
         .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
 })
-router.delete("/trash/:id", (req, res) => {
+router.delete("/trash/:id",checkTokenMiddleware, (req, res) => {
     let userId = parseInt(req.params.id)
 
     if(!userId) {
@@ -98,7 +99,7 @@ router.delete("/trash/:id", (req, res) => {
         .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
 })
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id",checkTokenMiddleware, (req, res) => {
     let userId = parseInt(req.params.id)
 
     if(!userId) {
