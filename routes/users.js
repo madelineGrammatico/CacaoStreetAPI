@@ -14,6 +14,7 @@ router.post('', userCtrl.addUser)
 router.patch("/:id", checkTokenMiddleware,userCtrl.updateUser)
    
 router.patch("/untrash/:id", checkTokenMiddleware, userCtrl.untrashUser)
+
 router.delete("/trash/:id", checkTokenMiddleware, userCtrl.trashUser)
 
 router.delete("/:id",checkTokenMiddleware, userCtrl.deleteUser)
