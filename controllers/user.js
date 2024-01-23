@@ -11,67 +11,71 @@ exports.getAllUsers = (req, res) => {
         })
 }
 
-exports.getUser = (req, res) => {
+exports.getUser = async (req, res) => {
     let userId = parseInt(req.params.id)
+
     if(!userId) {
         return res.json(400).jsonp({ message: "Missing Parameter"})
     }
 
-    User.findOne({ where: {id: userId}, raw : true})
-        .then(user => {
-            if((user === null)) {
-                return res.status(404).json({ message: "This user does not exist !"})
-            }
-            return res.json({data: user})
-        })
-        .catch(err => res.status(500).json({ message: 'DataBase Error', error: err}))
+    try {
+        const user = await User.findOne({ where: {id: userId}, raw: true })
+
+        if((user === null)) {
+            return res.status(404).json({ message: "This user does not exist !"})
+        }
+
+        return res.json({data: user})
+
+    } catch(err) {
+        res.status(500).json({ message: 'DataBase Error', error: err})
+    }
 }
 
-exports.addUser = (req, res) => {
+exports.addUser = async (req, res) => {
     const {speudo, email, password } = req.body
 
     if(!speudo || !email || !password) {
         return res.status(400).json({ message: "Missing Data" })
     }
 
-    User.findOne({where: { email: email}, raw: true})
-        .then(user => {
-            if(user !== null) {
-                return res.status(409).json({ message: `The email ${email} already exists`})
-            }
+    try {
+        const user = await User.findOne({where: { email: email}, raw: true})
 
-            bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
-                .then(hash => {
-                    req.body.password = hash
+        if(user !== null) {
+            return res.status(409).json({ message: `The email ${email} already exists`})
+        }
 
-                    User.create(req.body)
-                    .then(user => res.json({message: "UserCreated", data: user}))
-                    .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
-                })
-                .catch(err => res.status(500))
+        const hash = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
+        req.body.password = hash
 
-        })
-        .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
+        const userCrypted = await User.create(req.body)
+        return res.json({message: "UserCreated", data: userCrypted})
+        
+    }catch(err) {
+        res.status(500).json({ message: 'DataBase Error', error: err })
+    }
 }
 
-exports.updateUser = (req, res) => {
+exports.updateUser = async (req, res) => {
     let userId = parseInt(req.params.id)
 
     if(!userId) {
         return res.status(400).json({ message: "Missing parameter" })
     }
+    try {
+        const user = await User.findOne({ where: {id: userId}, raw: true})
 
-    User.findOne({ where: {id: userId}, raw: true})
-        .then(user => {
-            if(user === null) {
-                return res.status(404).json({ message: "This user does not exist !"})
-            }
+        if(user === null) {
+            return res.status(404).json({ message: "This user does not exist !"})
+        }
+        
+        await User.update(req.body, {where: {id: userId}})
+        return res.json({ message: "User Updated", data: user })
 
-            User.update(req.body, {where: {id: userId}})
-                .then( user => res.json({ message: "User Updated", data: user }))
-                .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
-        })
-        .catch(err => res.status(500).json({ message: 'DataBase Error', error: err }))
+    } catch(err) {
+        res.status(500).json({ message: 'DataBase Error', error: err })
+    }
 }
 
 exports.untrashUser = (req, res) => {
