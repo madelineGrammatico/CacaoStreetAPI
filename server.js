@@ -7,21 +7,19 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true}))
 
-const user_router = require("./routes/users")
+const user_router = require('./routes/users')
+const auth_router = require('./routes/auth')
+
 app.use('/users', user_router)
 
 app.get('/', (req, res) => {
-    res.send("Home in progress")
+    res.send("In progress")
 })
-app.get('/selections', (req, res) => {
-    res.send("selections in comming")
-})
-app.get('/connection', (req, res) => {
-    res.send("Login and SignIn soon")
-})
+app.use('/auth', auth_router)
 app.get('/*', (req, res) => {
     res.status(501).send("What the hell are you doing !?!")
 })
+
 DB.authenticate()
     .then( () => { console.log("Datatbase connection Ok")})
     .then(() => {
