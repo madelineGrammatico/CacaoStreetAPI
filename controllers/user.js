@@ -12,13 +12,15 @@ exports.getAllUsers = (req, res) => {
 }
 
 exports.getUser = async (req, res) => {
-    let userId = parseInt(req.params.id)
-
-    if(!userId) {
-        return res.json(400).jsonp({ message: "Missing Parameter"})
-    }
+    
 
     try {
+        const userId = parseInt(req.params.id)
+
+        if(!userId) {
+            // return res.json(400).jsonp({ message: "Missing Parameter"})
+            throw new Error("Missing Parameter")
+        }
         const user = await User.findOne({ where: {id: userId}, raw: true })
 
         if((user === null)) {
