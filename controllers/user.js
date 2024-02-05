@@ -11,7 +11,7 @@ exports.getAllUsers = (req, res) => {
         })
 }
 
-exports.getUser = async (req, res) => {
+exports.getUser = async (req, res, next) => {
     try {
         const userId = parseInt(req.params.id)
         if(!userId) {
@@ -27,7 +27,8 @@ exports.getUser = async (req, res) => {
         return res.json({data: user})
 
     } catch(err) {
-        res.status(err.statusCode || 500).json({ message: err.message, error: err})
+        // res.status(err.statusCode || 500).json({ message: err.message, error: err})
+        next(err)
     }
 }
 
@@ -55,7 +56,8 @@ exports.addUser = async (req, res) => {
         return res.json({message: "UserCreated", data: userCrypted})
         
     }catch(err) {
-        res.status(err.statusCode || 500).json({ message: err.message, error: err})
+        // res.status(err.statusCode || 500).json({ message: err.message, error: err})
+        next(err)
     }
 }
 
@@ -79,7 +81,8 @@ exports.updateUser = async (req, res) => {
         return res.json({ message: "User Updated", data: user })
 
     } catch(err) {
-        res.status(err.statusCode || 500).json({ message: err.message, error: err})
+        // res.status(err.statusCode || 500).json({ message: err.message, error: err})
+        next(err)
     }
 }
 
