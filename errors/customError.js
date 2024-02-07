@@ -4,17 +4,21 @@ class MainError extends Error {
         super()
         switch(this.constructor.name) {
             case "AuthentificationError":
-                console.log("Authentification error")
+                this.statusCode = 404
             break
             case"UserError":
-                console.log("User Error")
+                if(errorType === 0) {
+                    this.statusCode = 404
+                } else {
+                    this.statusCode = 409
+                }
             break
            
             case"RequestError":
-                console.log("Request Error")
+                this.statusCode = 400
             break
             default:
-                console.log("les autres")
+                console.log("No handler error for that")
         }
     }
 }
