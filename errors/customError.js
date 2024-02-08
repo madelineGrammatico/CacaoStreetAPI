@@ -4,7 +4,13 @@ class MainError extends Error {
         super()
         switch(this.constructor.name) {
             case "AuthentificationError":
-                this.statusCode = 404
+                if(errorType === 0) {
+                    this.statusCode = 400
+                } else if(errorType === 1) {
+                    this.statusCode = 401
+                } else {
+                    this.statusCode = 404
+                }
             break
             case"UserError":
                 if(errorType === 0) {
