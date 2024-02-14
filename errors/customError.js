@@ -1,7 +1,10 @@
 class MainError extends Error {
-
-    constructor(errrorMessage, errorType = "") {
+    constructor(errorMessage, errorType = "") {
         super()
+
+        this.name = this.constructor.name
+        this.message = errorMessage
+
         switch(this.constructor.name) {
             case "AuthentificationError":
                 if(errorType === 0) {
@@ -12,15 +15,14 @@ class MainError extends Error {
                     this.statusCode = 404
                 }
             break
-            case"UserError":
+            case "UserError":
                 if(errorType === 0) {
                     this.statusCode = 404
                 } else {
                     this.statusCode = 409
                 }
             break
-           
-            case"RequestError":
+            case "RequestError":
                 this.statusCode = 400
             break
             default:
