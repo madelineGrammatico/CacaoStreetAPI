@@ -3,14 +3,18 @@ const errorHandler = (err, req, res, next) => {
     // 0 - Message simple
     // 1 - Message sans ereurs
     // 2 - Toutes les informations
-    debugLevel = 0
+    
+    debugLevel = 2
     message = {}
 
     switch(debugLevel) {
         case 0:
-            message = { message: err.message }
             if (err.name === "SequelizeDatabaseError") {
-                message = { message: "DataBase Error"}
+                console.log("sequelize error")
+                message = { message: "DataBase Error" }
+
+            } else {
+                message = { message: err.message }
             }
         break
         case 1:
@@ -23,7 +27,7 @@ const errorHandler = (err, req, res, next) => {
             console.log("bad debugLevel")
     }
 
-    return res.status(err.statusCode || 500).json({ message: err.message, error: err})
+    return res.status(err.statusCode || 500).json({ message: message})
 }
 
 module.exports = errorHandler

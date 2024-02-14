@@ -12,15 +12,16 @@ exports.getUser = async (req, res, next) => {
     try {
         const userId = parseInt(req.params.id)
         if(!userId) {
-            // return res.json(400).jsonp({ message: "Missing Parameter"})
+            // return res.json(400).json({ message: "Missing Parameter"})
             throw new RequestError("Missing Parameter")
         }
 
-        const user = await User.findOne({ where: {id: userId}, raw: true })
+        const user = await User.findOne({ where: { id: userId }, raw: true })
         if((user === null)) {
             // return res.status(404).json({ message: "This user does not exist !"})
-            throw new UserError("This user does not exist !",0)
+            throw new UserError("This user does not exist !", 0)
         }
+
         return res.json({data: user})
 
     } catch(err) {
@@ -50,14 +51,13 @@ exports.addUser = async (req, res, next) => {
         const userCrypted = await User.create(req.body)
         return res.json({message: "UserCreated", data: userCrypted})
         
-    }catch(err) {
+    } catch(err) {
         // res.status(err.statusCode || 500).json({ message: err.message, error: err})
         next(err)
     }
 }
 
 exports.updateUser = async (req, res, next) => {
-    
     try {
         let userId = parseInt(req.params.id)
         if(!userId) {
@@ -72,8 +72,8 @@ exports.updateUser = async (req, res, next) => {
             throw new UserError("This user does not exist !",0)
         }
         
-        await User.update(req.body, {where: {id: userId}})
-        return res.json({ message: "User Updated", data: user })
+        await User.update(req.body, { where: { id: userId } })
+        return res.json({ message: "User Updated" })
 
     } catch(err) {
         // res.status(err.statusCode || 500).json({ message: err.message, error: err})

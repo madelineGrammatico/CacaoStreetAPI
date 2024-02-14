@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require("cors")
 let DB =require('./db.config')
+const errorHandler =  require("./errors/errorHandler")
 
 const app = express()
 app.use(cors())
@@ -19,11 +20,9 @@ app.use('/auth', auth_router)
 app.get('/*', (req, res) => {
     res.status(501).send("What the hell are you doing !?!")
 })
-app.use((error, req, res, next) => {
-    console.log('dans le middleware')
-    console.log(error)
-    return res.status(err.statusCode || 500).json({ message: err.message, error: err})
-})
+app.use(errorHandler)
+
+
 DB.authenticate()
     .then( () => { console.log("Datatbase connection Ok")})
     .then(() => {
