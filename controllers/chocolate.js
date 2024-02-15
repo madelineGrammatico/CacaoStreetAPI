@@ -1,4 +1,5 @@
-const Chocolate = require('../models/chocolate')
+const DB = require("../db.config")
+const Chocolate = DB.Chocolate
 const { ChocolateError, RequestError } = require('../errors/customError')
 
 exports.getAllChocolates = (req, res) => {
@@ -25,12 +26,13 @@ exports.getChocolate = async (req, res, next) => {
 }
 
 exports.addChocolate = async (req, res, next) => {
+    console.log(req.params.chocolateId)
     try {
         const {name, addressShop, position, rate, hours, price } = req.body
         if(!name || !addressShop || !position || !rate || !hours || !price) {
             throw new RequestError("Missing Data")
         }
-
+        
         const isChocolateExist = await Chocolate.findOne({ where: { name: name, addressShop: addressShop }, raw: true })
         if(isChocolateExist !== null) {
             throw new ChocolateError(`The chocolate '${isChocolateExist.name}' already exists`,1)

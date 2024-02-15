@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
-const User = require('../models/user')
 const {UserError, RequestError } = require('../errors/customError')
+const DB = require("../db.config")
+const User = DB.User
 
 exports.getAllUsers = (req, res) => {
     User.findAll()

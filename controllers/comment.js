@@ -1,4 +1,5 @@
-const Comment = require('../models/comment')
+const DB = require("../db.config")
+const Comment = DB.Comment
 const { CommentError, RequestError } = require('../errors/customError')
 
 exports.getAllComments = (req, res) => {
@@ -25,12 +26,13 @@ exports.getComment = async (req, res, next) => {
 }
 
 exports.addComment = async (req, res, next) => {
+    
     try {
         const {body, rate} = req.body
         if(!body || !rate) {
             throw new RequestError("Missing Data")
         }
-
+        
         const comment = await Comment.create(req.body)
         return res.json({ message: "Comment Created", data: comment })
         

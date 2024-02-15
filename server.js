@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require("cors")
-let DB =require('./db.config')
+let DB = require('./db.config')
 const errorHandler =  require("./errors/errorHandler")
 
 const app = express()
@@ -19,7 +19,7 @@ app.use('/users', user_router)
 // })
 app.use('/auth', auth_router)
 app.use('/chocolate', chocolate_router)
-app.use('/comment', comment_router)
+app.use('/chocolate/:chocolateId/comment', comment_router)
 
 app.get('/*', (req, res) => {
     res.status(501).send("What the hell are you doing !?!")
@@ -27,7 +27,7 @@ app.get('/*', (req, res) => {
 app.use(errorHandler)
 
 
-DB.authenticate()
+DB.sequelize.authenticate()
     .then(() => { console.log("Datatbase connection Ok")})
     .then(() => {
         app.listen(process.env.SERVER_PORT, () => {
