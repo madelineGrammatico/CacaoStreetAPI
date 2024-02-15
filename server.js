@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extended: true}))
 const user_router = require('./routes/users')
 const auth_router = require('./routes/auth')
 const chocolate_router = require('./routes/chocolate')
+const comment_router = require('./routes/comment')
 
 app.use('/users', user_router)
 // app.get('/', (req, res) => {
@@ -18,6 +19,7 @@ app.use('/users', user_router)
 // })
 app.use('/auth', auth_router)
 app.use('/chocolate', chocolate_router)
+app.use('/comment', comment_router)
 
 app.get('/*', (req, res) => {
     res.status(501).send("What the hell are you doing !?!")

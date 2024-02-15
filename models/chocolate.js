@@ -31,7 +31,7 @@ const Chocolate = DB.define("Chocolate", {
         type: DataTypes.STRING,
         allowNull: false
     },
-},{ paranoid: true})
+})
 
 // User.sync()
 // User.sync({ force: true })

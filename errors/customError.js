@@ -29,6 +29,9 @@ class MainError extends Error {
                     this.statusCode = 409
                 }
             break
+            case "CommentError":
+                    this.statusCode = 404
+            break
             case "RequestError":
                 this.statusCode = 400
             break
@@ -42,5 +45,6 @@ class AuthentificationError extends MainError{}
 class UserError extends MainError{}
 class RequestError extends MainError{}
 class ChocolateError extends MainError{}
+class CommentError extends MainError{}
 
-module.exports = { MainError, AuthentificationError, UserError,ChocolateError, RequestError}
+module.exports = { MainError, AuthentificationError, UserError,ChocolateError, CommentError, RequestError}
