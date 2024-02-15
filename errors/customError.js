@@ -22,6 +22,13 @@ class MainError extends Error {
                     this.statusCode = 409
                 }
             break
+            case "ChocolateError":
+                if(errorType === 0) {
+                    this.statusCode = 404
+                } else {
+                    this.statusCode = 409
+                }
+            break
             case "RequestError":
                 this.statusCode = 400
             break
@@ -34,5 +41,6 @@ class MainError extends Error {
 class AuthentificationError extends MainError{}
 class UserError extends MainError{}
 class RequestError extends MainError{}
+class ChocolateError extends MainError{}
 
-module.exports = { MainError, AuthentificationError, UserError, RequestError}
+module.exports = { MainError, AuthentificationError, UserError,ChocolateError, RequestError}
