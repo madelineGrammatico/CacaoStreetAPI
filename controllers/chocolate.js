@@ -25,8 +25,7 @@ exports.getChocolate = async (req, res, next) => {
     } catch(err) { next(err) }
 }
 
-exports.addChocolate = async (req, res, next) => {
-    console.log(req.params.chocolateId)
+exports.addChocolate = async (user_Id, req, res, next) => {
     try {
         const {name, addressShop, position, rate, hours, price } = req.body
         if(!name || !addressShop || !position || !rate || !hours || !price) {
@@ -38,13 +37,16 @@ exports.addChocolate = async (req, res, next) => {
             throw new ChocolateError(`The chocolate '${isChocolateExist.name}' already exists`,1)
         }
 
-        const chocolate = await Chocolate.create(req.body)
+        let chocolate = {
+            name, addressShop, position, rate, hours, price, user_Id
+        }
+        chocolate = await Chocolate.create(chocolate)
         return res.json({ message: "Chocolate Created", data: chocolate })
         
     } catch(err) { next(err) }
 }
 
-exports.updateChocolate = async (req, res, next) => {
+exports.updateChocolate = async (user_Id, req, res, next) => {
     try {
         const chocolateId = parseInt(req.params.id)
         if(!chocolateId) {
@@ -55,6 +57,9 @@ exports.updateChocolate = async (req, res, next) => {
         if(chocolate === null) {
             return res.json(404).json({ message: "chocolate does'nt exist"})
         }
+        if (chocolate.user_Id !== user_Id) {
+            return res.json(404).json({ message: "You don't have the right for this"})
+        }
         
         await Chocolate.update(req.body, { where: { id: chocolateId } })
         return res.json({ message: "Chocolate Updated" })
@@ -62,13 +67,21 @@ exports.updateChocolate = async (req, res, next) => {
     } catch(err) { next(err) }
 }
 
-exports.deleteChocolate = async (req, res, next) => {
+exports.deleteChocolate = async (user_Id, req, res, next) => {
     try {
         let chocolateId = parseInt(req.params.id)
         if(!chocolateId) {
             return res.json(400).json({ message: "Missing Parameter"})
         }
-        
+
+        const chocolate = await Chocolate.findOne({ where: {id: chocolateId}, raw: true})
+        if(chocolate === null) {
+            return res.json(404).json({ message: "chocolate does'nt exist"})
+        }
+        if (chocolate.user_Id !== user_Id) {
+            return res.json(404).json({ message: "You don't have the right for this"})
+        }
+
         await Chocolate.destroy({ where: {id: chocolateId}, force: true})
         return res.status(204).json({})
 

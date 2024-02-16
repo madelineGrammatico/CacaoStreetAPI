@@ -19,7 +19,7 @@ app.use('/users', user_router)
 // })
 app.use('/auth', auth_router)
 app.use('/chocolate', chocolate_router)
-app.use('/chocolate/:chocolateId/comment', comment_router)
+app.use('/comment', comment_router)
 
 app.get('/*', (req, res) => {
     res.status(501).send("What the hell are you doing !?!")

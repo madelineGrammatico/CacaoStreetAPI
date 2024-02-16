@@ -15,6 +15,10 @@ module.exports = (sequelize) => {
             type: DataTypes.INTEGER(1),
             allowNull: false
         },
+        chocolate_Id: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        }
         
     })
     return Comment

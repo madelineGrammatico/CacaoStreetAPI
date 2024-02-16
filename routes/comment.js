@@ -11,8 +11,8 @@ router.get('/:id', commentCtrl.getComment)
 
 router.post('', checkTokenMiddleware, commentCtrl.addComment)
 
-router.patch("/:id", checkTokenMiddleware,commentCtrl.updateComment)
+router.patch("/:id", checkTokenMiddleware, commentCtrl.updateComment)
 
-router.delete("/:id",checkTokenMiddleware, commentCtrl.deleteComment)
+router.delete("/:id", checkTokenMiddleware, commentCtrl.deleteComment)
 
 module.exports = router

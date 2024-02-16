@@ -11,8 +11,8 @@ router.get('/:id', chocolateCtrl.getChocolate)
 
 router.post('', checkTokenMiddleware, chocolateCtrl.addChocolate)
 
-router.patch("/:id", checkTokenMiddleware,chocolateCtrl.updateChocolate)
+router.patch("/:id", checkTokenMiddleware, chocolateCtrl.updateChocolate)
 
-router.delete("/:id",checkTokenMiddleware, chocolateCtrl.deleteChocolate)
+router.delete("/:id", checkTokenMiddleware, chocolateCtrl.deleteChocolate)
 
 module.exports = router

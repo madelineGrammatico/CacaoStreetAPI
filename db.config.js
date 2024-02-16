@@ -17,29 +17,29 @@ db.Chocolate =require("./models/chocolate") (sequelize)
 db.Comment = require("./models/comment") (sequelize)
 
 db.User.hasMany(db.Chocolate, {
-    foreignKey: "User_Id",
+    foreignKey: "user_Id",
     as:"Chocolate"
 })
 db.Chocolate.belongsTo(db.User, {
-    foreignKey: "User_Id",
+    foreignKey: "user_Id",
     as:"User"
 })
 
 db.Chocolate.hasMany(db.Comment, {
-    foreignKey: "Chocolate_Id",
+    foreignKey: "chocolate_Id",
     as: "Comment"
 })
 db.Comment.belongsTo(db.Chocolate, {
-    foreignKey: "Chocolate_Id",
+    foreignKey: "chocolate_Id",
     as:"Chocolate"
 })
 
 db.User.hasMany(db.Comment,(db.Comment, {
-    foreignKey: "User_comment_Id",
+    foreignKey: "user_comment_Id",
     as: "Comment"
 }))
 db.Comment.belongsTo(db.User,{
-    foreignKey: "User_comment_Id",
+    foreignKey: "user_comment_Id",
     as:"User"
 })
 
