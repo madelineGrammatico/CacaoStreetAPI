@@ -31,7 +31,7 @@ exports.getUser = async (req, res, next) => {
     }
 }
 
-exports.addUser = async (user_Id, req, res, next) => {
+exports.addUser = async ( req, res, next) => {
     try {
         const {speudo, email, password } = req.body
         if(!speudo || !email || !password) {
@@ -47,12 +47,8 @@ exports.addUser = async (user_Id, req, res, next) => {
         }
 
         const hash = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
-        // req.body.password = hash
+        req.body.password = hash
 
-        let userCrypted =  {
-            speudo, email, user_Id,
-            password: hash 
-        }
         userCrypted = await User.create(req.body)
         return res.json({message: "UserCreated", data: userCrypted})
         
