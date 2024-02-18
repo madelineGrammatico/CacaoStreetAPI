@@ -43,8 +43,6 @@ db.Comment.belongsTo(db.User,{
     as:"User"
 })
 
-sequelize.sync((err) => {
-    console.log('Database Error', err)
-})
+sequelize.sync({alter: true})
 
 module.exports = db
