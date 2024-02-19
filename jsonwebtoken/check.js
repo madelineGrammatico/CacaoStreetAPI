@@ -9,18 +9,23 @@ const extractBearer = authorization => {
     return matches && matches[2]
 }
 
-const checkTokenMiddleware = (req, res, next) => {
+const checkTokenMiddleware = (req, res, next, needUser = true ) => {
+    console.log("needUser : ", needUser)
     const token= req.headers.authorization && extractBearer(req.headers.authorization)
     if(!token){
         return res.status(401).json({ message: "arhhhhhhhhhhhg where are your token ?!?!!"})
     }
-
+    
     jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
         if(err) {
             return res.status(401).json({ message: "Bad token" })
         }
-
-        next()
+        if (needUser !== true) {
+            next()
+        } else {
+            const user_Id = decodedToken.id
+            next(user_Id)
+        }
     })
 }
 module.exports = checkTokenMiddleware

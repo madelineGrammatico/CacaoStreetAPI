@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
-const User = require('../models/user')
 const {UserError, RequestError } = require('../errors/customError')
+const DB = require("../db.config")
+const User = DB.User
 
 exports.getAllUsers = (req, res) => {
     User.findAll()
@@ -30,7 +31,7 @@ exports.getUser = async (req, res, next) => {
     }
 }
 
-exports.addUser = async (req, res, next) => {
+exports.addUser = async ( req, res, next) => {
     try {
         const {speudo, email, password } = req.body
         if(!speudo || !email || !password) {
@@ -48,7 +49,7 @@ exports.addUser = async (req, res, next) => {
         const hash = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
         req.body.password = hash
 
-        const userCrypted = await User.create(req.body)
+        userCrypted = await User.create(req.body)
         return res.json({message: "UserCreated", data: userCrypted})
         
     } catch(err) {
@@ -57,7 +58,7 @@ exports.addUser = async (req, res, next) => {
     }
 }
 
-exports.updateUser = async (req, res, next) => {
+exports.updateUser = async (user_Id, req, res, next) => {
     try {
         let userId = parseInt(req.params.id)
         if(!userId) {
@@ -71,7 +72,11 @@ exports.updateUser = async (req, res, next) => {
             // return res.status(404).json({ message: "This user does not exist !"})
             throw new UserError("This user does not exist !",0)
         }
-        
+
+        if (user.id !== user_Id) {
+            return res.json(404).json({ message: "You don't have the right for this"})
+        }
+
         await User.update(req.body, { where: { id: userId } })
         return res.json({ message: "User Updated" })
 
@@ -81,13 +86,18 @@ exports.updateUser = async (req, res, next) => {
     }
 }
 
-exports.untrashUser = async (req, res, next) => {
+exports.untrashUser = async (user_Id, req, res, next) => {
     try {
         let userId = parseInt(req.params.id)
         if(!userId) {
             throw new RequestError("Missing parameter")
         }
-    
+        
+        const user = await User.findOne({ where: {id: userId}, raw: true})
+        if (user.id !== user_Id) {
+            return res.json(404).json({ message: "You don't have the right for this"})
+        }
+
         await User.restore({ where : {id: userId}})
         return res.status(204).json({})
     } catch(err) {
@@ -95,11 +105,16 @@ exports.untrashUser = async (req, res, next) => {
     }
 }
 
-exports.trashUser = async (req, res, next) => {
+exports.trashUser = async (user_Id, req, res, next) => {
     try {
         let userId = parseInt(req.params.id)
         if(!userId) {
            throw new RequestError("Missing parameter")
+        }
+
+        const user = await User.findOne({ where: {id: userId}, raw: true})
+        if (user.id !== user_Id) {
+            return res.json(404).json({ message: "You don't have the right for this"})
         }
         
         await User.destroy({ where: {id: userId}})
@@ -109,13 +124,18 @@ exports.trashUser = async (req, res, next) => {
     }
 }
 
-exports.deleteUser = async (req, res, next) => {
+exports.deleteUser = async (user_Id, req, res, next) => {
     try {
         let userId = parseInt(req.params.id)
         if(!userId) {
             throw new RequestError("Missing parameter")
         }
         
+        const user = await User.findOne({ where: {id: userId}, raw: true})
+        if (user.id !== user_Id) {
+            return res.json(404).json({ message: "You don't have the right for this"})
+        }
+
         await User.destroy({ where: {id: userId}, force: true})
         return res.status(204).json({})
 

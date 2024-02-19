@@ -8,8 +8,41 @@ let sequelize = new Sequelize(
         logging: false
     }
 )
-sequelize.sync((err) => {
-    console.log('Database Error', err)
+
+const db = {}
+
+db.sequelize = sequelize
+db.User = require("./models/user") (sequelize)
+db.Chocolate =require("./models/chocolate") (sequelize)
+db.Comment = require("./models/comment") (sequelize)
+
+db.User.hasMany(db.Chocolate, {
+    foreignKey: "user_Id",
+    as:"Chocolate"
+})
+db.Chocolate.belongsTo(db.User, {
+    foreignKey: "user_Id",
+    as:"User"
 })
 
-module.exports = sequelize
+db.Chocolate.hasMany(db.Comment, {
+    foreignKey: "chocolate_Id",
+    as: "Comment"
+})
+db.Comment.belongsTo(db.Chocolate, {
+    foreignKey: "chocolate_Id",
+    as:"Chocolate"
+})
+
+db.User.hasMany(db.Comment,(db.Comment, {
+    foreignKey: "user_comment_Id",
+    as: "Comment"
+}))
+db.Comment.belongsTo(db.User,{
+    foreignKey: "user_comment_Id",
+    as:"User"
+})
+
+sequelize.sync({alter: true})
+
+module.exports = db
