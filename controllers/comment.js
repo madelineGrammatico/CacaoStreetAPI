@@ -25,11 +25,12 @@ exports.getComment = async (req, res, next) => {
     } catch(err) { next(err) }
 }
 
-exports.addComment = async (user_Id, req, res, next,) => {
+exports.addComment = async ( req, res, next,) => {
     
     try {
+        const user_Id = req.auth.user_Id
         const {body, rate, chocolate_Id} = req.body
-        if(!body || !rate || !chocolate_Id) {
+        if(!body || !rate || !chocolate_Id || !user_Id) {
             throw new RequestError("Missing Data")
         }
 
@@ -48,8 +49,9 @@ exports.addComment = async (user_Id, req, res, next,) => {
     } catch(err) { next(err) }
 }
 
-exports.updateComment = async (user_Id, req, res, next) => {
+exports.updateComment = async (req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         const commentId = parseInt(req.params.id)
         if(!commentId) {
             // return res.json(400).json({ message: "Missing Parameter"})
@@ -72,8 +74,9 @@ exports.updateComment = async (user_Id, req, res, next) => {
     } catch(err) { next(err) }
 }
 
-exports.deleteComment = async (user_Id, req, res, next) => {
+exports.deleteComment = async (req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         let commentId = parseInt(req.params.id)
         if(!commentId) {
             // return res.json(400).json({ message: "Missing Parameter"})

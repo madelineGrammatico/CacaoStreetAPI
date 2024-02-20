@@ -34,15 +34,16 @@ db.Comment.belongsTo(db.Chocolate, {
     as:"Chocolate"
 })
 
-db.User.hasMany(db.Comment,(db.Comment, {
+db.User.hasMany(db.Comment, {
     foreignKey: "user_comment_Id",
     as: "Comment"
-}))
+})
+
 db.Comment.belongsTo(db.User,{
     foreignKey: "user_comment_Id",
     as:"User"
 })
 
-sequelize.sync({alter: true})
+db.sequelize.sync({alter: true})
 
 module.exports = db

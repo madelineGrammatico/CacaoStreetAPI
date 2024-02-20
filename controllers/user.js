@@ -58,8 +58,9 @@ exports.addUser = async ( req, res, next) => {
     }
 }
 
-exports.updateUser = async (user_Id, req, res, next) => {
+exports.updateUser = async (req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
             // return res.status(400).json({ message: "Missing parameter" })
@@ -86,8 +87,9 @@ exports.updateUser = async (user_Id, req, res, next) => {
     }
 }
 
-exports.untrashUser = async (user_Id, req, res, next) => {
+exports.untrashUser = async ( req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
             throw new RequestError("Missing parameter")
@@ -105,8 +107,9 @@ exports.untrashUser = async (user_Id, req, res, next) => {
     }
 }
 
-exports.trashUser = async (user_Id, req, res, next) => {
+exports.trashUser = async (req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
            throw new RequestError("Missing parameter")
@@ -124,8 +127,9 @@ exports.trashUser = async (user_Id, req, res, next) => {
     }
 }
 
-exports.deleteUser = async (user_Id, req, res, next) => {
+exports.deleteUser = async (req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
             throw new RequestError("Missing parameter")

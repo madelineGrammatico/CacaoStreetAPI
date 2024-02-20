@@ -20,12 +20,10 @@ const checkTokenMiddleware = (req, res, next, needUser = true ) => {
         if(err) {
             return res.status(401).json({ message: "Bad token" })
         }
-        if (needUser !== true) {
-            next()
-        } else {
-            const user_Id = decodedToken.id
-            next(user_Id)
+        if (needUser === true) {
+            req.auth = { user_Id: decodedToken.id }
         }
+        next()
     })
 }
 module.exports = checkTokenMiddleware

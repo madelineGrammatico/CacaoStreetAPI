@@ -25,10 +25,11 @@ exports.getChocolate = async (req, res, next) => {
     } catch(err) { next(err) }
 }
 
-exports.addChocolate = async (user_Id, req, res, next) => {
+exports.addChocolate = async ( req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         const {name, addressShop, position, rate, hours, price } = req.body
-        if(!name || !addressShop || !position || !rate || !hours || !price) {
+        if(!name || !addressShop || !position || !rate || !hours || !price || !user_Id) {
             throw new RequestError("Missing Data")
         }
         
@@ -46,8 +47,9 @@ exports.addChocolate = async (user_Id, req, res, next) => {
     } catch(err) { next(err) }
 }
 
-exports.updateChocolate = async (user_Id, req, res, next) => {
+exports.updateChocolate = async ( req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         const chocolateId = parseInt(req.params.id)
         if(!chocolateId) {
             return res.json(400).json({ message: "Missing Parameter"})
@@ -67,8 +69,9 @@ exports.updateChocolate = async (user_Id, req, res, next) => {
     } catch(err) { next(err) }
 }
 
-exports.deleteChocolate = async (user_Id, req, res, next) => {
+exports.deleteChocolate = async ( req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         let chocolateId = parseInt(req.params.id)
         if(!chocolateId) {
             return res.json(400).json({ message: "Missing Parameter"})
