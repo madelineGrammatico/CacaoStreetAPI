@@ -4,7 +4,11 @@ let DB = require('./db.config')
 const errorHandler =  require("./errors/errorHandler")
 
 const app = express()
-app.use(cors())
+app.use(cors({
+    origin: "http://127.0.0.1:5500",
+    methods: "GET, POST, PATCH, DELETE",
+    allowedHeaders: "Origin, X-Requested-With, x-acces-token, role, Content, Accept, Content-Type, Authorization"
+}))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true}))
 
