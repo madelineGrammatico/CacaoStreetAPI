@@ -37,12 +37,12 @@ exports.addChocolate = async ( req, res, next) => {
         if(isChocolateExist !== null) {
             throw new ChocolateError(`The chocolate '${isChocolateExist.name}' already exists`,1)
         }
-
+        const user = await DB.User.findOne({ where: {id: user_Id}, raw: true})
         let chocolate = {
-            name, addressShop, position, rate, hours, price, user_Id
+            name, addressShop, position, rate, hours, price, user_Id,
         }
         chocolate = await Chocolate.create(chocolate)
-        return res.json({ message: "Chocolate Created", data: chocolate })
+        return res.json({ message: "Chocolate Created", data: chocolate, user: user })
         
     } catch(err) { next(err) }
 }

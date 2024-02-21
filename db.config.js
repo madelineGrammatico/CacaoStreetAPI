@@ -25,24 +25,24 @@ db.Chocolate.belongsTo(db.User, {
     as:"User"
 })
 
-db.Chocolate.hasMany(db.Comment, {
-    foreignKey: "chocolate_Id",
-    as: "Comment"
-})
-db.Comment.belongsTo(db.Chocolate, {
-    foreignKey: "chocolate_Id",
-    as:"Chocolate"
-})
+// db.Chocolate.hasMany(db.Comment, {
+//     foreignKey: "chocolate_Id",
+//     as: "Comment"
+// })
+// db.Comment.belongsTo(db.Chocolate, {
+//     foreignKey: "chocolate_Id",
+//     as:"Chocolate"
+// })
 
-db.User.hasMany(db.Comment, {
-    foreignKey: "user_comment_Id",
-    as: "Comment"
-})
+// db.User.hasMany(db.Comment, {
+//     foreignKey: "user_comment_Id",
+//     as: "Comment"
+// })
 
-db.Comment.belongsTo(db.User,{
-    foreignKey: "user_comment_Id",
-    as:"User"
-})
+// db.Comment.belongsTo(db.User,{
+//     foreignKey: "user_comment_Id",
+//     as:"User"
+// })
 
 db.sequelize.sync({alter: true})
 

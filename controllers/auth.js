@@ -22,7 +22,7 @@ exports.loginUser = async (req, res, next) => {
             throw new AuthentificationError("This account does not exists !")
         }
 
-        const test = await bcrypt.compare(password, user.password)
+        const test = await User.checkPassword(password, user.password)
         if(!test) {
             // return res.status(401).json({ message: "Wrong password" })
             throw new AuthentificationError("Wrong password", 1)

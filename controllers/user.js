@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt')
+
 const {UserError, RequestError } = require('../errors/customError')
 const DB = require("../db.config")
 const User = DB.User
@@ -46,8 +46,8 @@ exports.addUser = async ( req, res, next) => {
             throw new UserError(`The email ${email} already exists`,1)
         }
 
-        const hash = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
-        req.body.password = hash
+        // const hash = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
+        // req.body.password = hash
 
         userCrypted = await User.create(req.body)
         return res.json({message: "UserCreated", data: userCrypted})
