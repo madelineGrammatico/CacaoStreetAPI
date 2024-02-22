@@ -33,8 +33,8 @@ exports.getUser = async (req, res, next) => {
 
 exports.addUser = async ( req, res, next) => {
     try {
-        const {speudo, email, password } = req.body
-        if(!speudo || !email || !password) {
+        const {pseudo, email, password } = req.body
+        if(!pseudo || !email || !password) {
             // return res.status(400).json({ message: "Missing Data" })
             throw new RequestError("Missing Data")
         }

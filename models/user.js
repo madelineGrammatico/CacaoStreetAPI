@@ -8,7 +8,7 @@ module.exports =(sequelize) => {
             primaryKey: true,
             autoIncrement: true
         },
-        speudo: {
+        pseudo: {
             type: DataTypes.STRING(50),
             unique: true,
             allowNull: false
