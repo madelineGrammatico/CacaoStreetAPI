@@ -15,7 +15,7 @@ exports.getComment = async (req, res, next) => {
             throw new RequestError("Missing Parameter")
         }
 
-        const comment = await Comment.findOne({ where: { id: commentId }, raw: true })
+        const comment = await Comment.findOne({ where: { id: commentId }, raw: true, include: "Chocolate" })
         if((comment === null)) {
             throw new CommentError("This comment does not exist !", 0)
         }

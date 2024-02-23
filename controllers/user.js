@@ -2,6 +2,7 @@
 const {UserError, RequestError } = require('../errors/customError')
 const DB = require("../db.config")
 const User = DB.User
+const bcrypt = require('bcrypt')
 
 exports.getAllUsers = (req, res) => {
     User.findAll()
@@ -46,9 +47,6 @@ exports.addUser = async ( req, res, next) => {
             throw new UserError(`The email ${email} already exists`,1)
         }
 
-        // const hash = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
-        // req.body.password = hash
-
         userCrypted = await User.create(req.body)
         return res.json({message: "UserCreated", data: userCrypted})
         
@@ -78,6 +76,10 @@ exports.updateUser = async (req, res, next) => {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
 
+        if(req.body.password) {
+            const hash = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
+            req.body.password = hash
+        }
         await User.update(req.body, { where: { id: userId } })
         return res.json({ message: "User Updated" })
 
@@ -89,16 +91,16 @@ exports.updateUser = async (req, res, next) => {
 
 exports.untrashUser = async ( req, res, next) => {
     try {
-        const user_Id = req.auth.user_Id
+        // const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
             throw new RequestError("Missing parameter")
         }
-        
-        const user = await User.findOne({ where: {id: userId}, raw: true})
-        if (user.id !== user_Id) {
-            return res.json(404).json({ message: "You don't have the right for this"})
-        }
+
+        // const user = await User.findOne({ where: {id: userId}, raw: true})
+        // if (user.id !== user_Id) {
+        //     return res.json(404).json({ message: "You don't have the right for this"})
+        // }
 
         await User.restore({ where : {id: userId}})
         return res.status(204).json({})

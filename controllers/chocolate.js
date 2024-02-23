@@ -15,11 +15,11 @@ exports.getChocolate = async (req, res, next) => {
             throw new RequestError("Missing Parameter")
         }
 
-        const chocolate = await Chocolate.findOne({ where: { id: chocolateId }, raw: true })
+        const chocolate = await Chocolate.findOne({ where: { id: chocolateId }, include: "User" })
         if((chocolate === null)) {
             throw new ChocolateError("This user does not exist !", 0)
         }
-
+        // const user = await DB.User.findOne({ where: {id: user_Id}, raw: true})
         return res.json({data: chocolate})
 
     } catch(err) { next(err) }
@@ -33,16 +33,16 @@ exports.addChocolate = async ( req, res, next) => {
             throw new RequestError("Missing Data")
         }
         
-        const isChocolateExist = await Chocolate.findOne({ where: { name: name, addressShop: addressShop }, raw: true })
+        const isChocolateExist = await Chocolate.findOne({ where: { name: name, addressShop: addressShop }, raw: true})
         if(isChocolateExist !== null) {
             throw new ChocolateError(`The chocolate '${isChocolateExist.name}' already exists`,1)
         }
-        const user = await DB.User.findOne({ where: {id: user_Id}, raw: true})
+        
         let chocolate = {
             name, addressShop, position, rate, hours, price, user_Id,
         }
         chocolate = await Chocolate.create(chocolate)
-        return res.json({ message: "Chocolate Created", data: chocolate, user: user })
+        return res.json({ message: "Chocolate Created", data: chocolate })
         
     } catch(err) { next(err) }
 }
