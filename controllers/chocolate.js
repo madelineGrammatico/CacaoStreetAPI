@@ -15,30 +15,31 @@ exports.getChocolate = async (req, res, next) => {
             throw new RequestError("Missing Parameter")
         }
 
-        const chocolate = await Chocolate.findOne({ where: { id: chocolateId }, raw: true })
+        const chocolate = await Chocolate.findOne({ where: { id: chocolateId }, include: "User" })
         if((chocolate === null)) {
             throw new ChocolateError("This user does not exist !", 0)
         }
-
+        // const user = await DB.User.findOne({ where: {id: user_Id}, raw: true})
         return res.json({data: chocolate})
 
     } catch(err) { next(err) }
 }
 
-exports.addChocolate = async (user_Id, req, res, next) => {
+exports.addChocolate = async ( req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         const {name, addressShop, position, rate, hours, price } = req.body
-        if(!name || !addressShop || !position || !rate || !hours || !price) {
+        if(!name || !addressShop || !position || !rate || !hours || !price || !user_Id) {
             throw new RequestError("Missing Data")
         }
         
-        const isChocolateExist = await Chocolate.findOne({ where: { name: name, addressShop: addressShop }, raw: true })
+        const isChocolateExist = await Chocolate.findOne({ where: { name: name, addressShop: addressShop }, raw: true})
         if(isChocolateExist !== null) {
             throw new ChocolateError(`The chocolate '${isChocolateExist.name}' already exists`,1)
         }
-
+        
         let chocolate = {
-            name, addressShop, position, rate, hours, price, user_Id
+            name, addressShop, position, rate, hours, price, user_Id,
         }
         chocolate = await Chocolate.create(chocolate)
         return res.json({ message: "Chocolate Created", data: chocolate })
@@ -46,8 +47,9 @@ exports.addChocolate = async (user_Id, req, res, next) => {
     } catch(err) { next(err) }
 }
 
-exports.updateChocolate = async (user_Id, req, res, next) => {
+exports.updateChocolate = async ( req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         const chocolateId = parseInt(req.params.id)
         if(!chocolateId) {
             return res.json(400).json({ message: "Missing Parameter"})
@@ -67,8 +69,9 @@ exports.updateChocolate = async (user_Id, req, res, next) => {
     } catch(err) { next(err) }
 }
 
-exports.deleteChocolate = async (user_Id, req, res, next) => {
+exports.deleteChocolate = async ( req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         let chocolateId = parseInt(req.params.id)
         if(!chocolateId) {
             return res.json(400).json({ message: "Missing Parameter"})

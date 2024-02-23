@@ -1,7 +1,8 @@
-const bcrypt = require('bcrypt')
+
 const {UserError, RequestError } = require('../errors/customError')
 const DB = require("../db.config")
 const User = DB.User
+const bcrypt = require('bcrypt')
 
 exports.getAllUsers = (req, res) => {
     User.findAll()
@@ -33,8 +34,8 @@ exports.getUser = async (req, res, next) => {
 
 exports.addUser = async ( req, res, next) => {
     try {
-        const {speudo, email, password } = req.body
-        if(!speudo || !email || !password) {
+        const {pseudo, email, password } = req.body
+        if(!pseudo || !email || !password) {
             // return res.status(400).json({ message: "Missing Data" })
             throw new RequestError("Missing Data")
         }
@@ -46,9 +47,6 @@ exports.addUser = async ( req, res, next) => {
             throw new UserError(`The email ${email} already exists`,1)
         }
 
-        const hash = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
-        req.body.password = hash
-
         userCrypted = await User.create(req.body)
         return res.json({message: "UserCreated", data: userCrypted})
         
@@ -58,8 +56,9 @@ exports.addUser = async ( req, res, next) => {
     }
 }
 
-exports.updateUser = async (user_Id, req, res, next) => {
+exports.updateUser = async (req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
             // return res.status(400).json({ message: "Missing parameter" })
@@ -77,6 +76,10 @@ exports.updateUser = async (user_Id, req, res, next) => {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
 
+        if(req.body.password) {
+            const hash = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
+            req.body.password = hash
+        }
         await User.update(req.body, { where: { id: userId } })
         return res.json({ message: "User Updated" })
 
@@ -86,17 +89,18 @@ exports.updateUser = async (user_Id, req, res, next) => {
     }
 }
 
-exports.untrashUser = async (user_Id, req, res, next) => {
+exports.untrashUser = async ( req, res, next) => {
     try {
+        // const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
             throw new RequestError("Missing parameter")
         }
-        
-        const user = await User.findOne({ where: {id: userId}, raw: true})
-        if (user.id !== user_Id) {
-            return res.json(404).json({ message: "You don't have the right for this"})
-        }
+
+        // const user = await User.findOne({ where: {id: userId}, raw: true})
+        // if (user.id !== user_Id) {
+        //     return res.json(404).json({ message: "You don't have the right for this"})
+        // }
 
         await User.restore({ where : {id: userId}})
         return res.status(204).json({})
@@ -105,8 +109,9 @@ exports.untrashUser = async (user_Id, req, res, next) => {
     }
 }
 
-exports.trashUser = async (user_Id, req, res, next) => {
+exports.trashUser = async (req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
            throw new RequestError("Missing parameter")
@@ -124,8 +129,9 @@ exports.trashUser = async (user_Id, req, res, next) => {
     }
 }
 
-exports.deleteUser = async (user_Id, req, res, next) => {
+exports.deleteUser = async (req, res, next) => {
     try {
+        const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
             throw new RequestError("Missing parameter")
