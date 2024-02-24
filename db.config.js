@@ -27,7 +27,8 @@ db.Chocolate.belongsTo(db.User, {
 
 db.Chocolate.hasMany(db.Comment, {
     foreignKey: "chocolate_Id",
-    as: "Comment"
+    as: "Comment",
+    onDelelte: "cascade"
 })
 db.Comment.belongsTo(db.Chocolate, {
     foreignKey: "chocolate_Id",
