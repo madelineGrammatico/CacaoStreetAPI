@@ -18,7 +18,7 @@ exports.getUser = async (req, res, next) => {
             throw new RequestError("Missing Parameter")
         }
 
-        const user = await User.findOne({ where: { id: userId }, raw: true })
+        const user = await User.findOne({ where: { id: userId }, raw: true, attributes: ["id", "pseudo", "email"] })
         if((user === null)) {
             // return res.status(404).json({ message: "This user does not exist !"})
             throw new UserError("This user does not exist !", 0)
