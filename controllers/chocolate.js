@@ -15,9 +15,9 @@ exports.getChocolate = async (req, res, next) => {
             throw new RequestError("Missing Parameter")
         }
 
-        const chocolate = await Chocolate.findOne({
+        const chocolate = await Chocolate.findOne({ 
             where: { id: chocolateId },
-            include: { model: "User", attributes: ["id", "pseudo", "email"] }
+            include: { model: DB.User, as: "User", attributes: ["id", "pseudo", "email"]}
         })
         if((chocolate === null)) {
             throw new ChocolateError("This user does not exist !", 0)

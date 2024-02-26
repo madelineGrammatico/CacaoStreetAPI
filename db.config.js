@@ -5,7 +5,7 @@ let sequelize = new Sequelize(
         host : process.env.DB_HOST,
         port: process.env.DB_PORT,
         dialect: 'mysql',
-        logging: true
+        logging: false
     }
 )
 
@@ -17,7 +17,7 @@ db.Chocolate =require("./models/chocolate") (sequelize)
 db.Comment = require("./models/comment") (sequelize)
 
 db.User.hasMany(db.Chocolate, {
-    foreignKey: "user_Id",
+    foreignKey: "User_Chocolate",
     as:"Chocolate"
 })
 db.Chocolate.belongsTo(db.User, {
