@@ -5,7 +5,7 @@ let sequelize = new Sequelize(
         host : process.env.DB_HOST,
         port: process.env.DB_PORT,
         dialect: 'mysql',
-        logging: true
+        logging: false
     }
 )
 
@@ -27,7 +27,8 @@ db.Chocolate.belongsTo(db.User, {
 
 db.Chocolate.hasMany(db.Comment, {
     foreignKey: "chocolate_Id",
-    as: "Comment"
+    as: "Comment",
+    onDelelte: "cascade"
 })
 db.Comment.belongsTo(db.Chocolate, {
     foreignKey: "chocolate_Id",

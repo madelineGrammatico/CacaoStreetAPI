@@ -21,7 +21,7 @@ const errorHandler = (err, req, res, next) => {
             message = { message: err.message }
         break
         case 2:
-            message = { error: err }
+            message = { error: err, message: err.message }
         break
         default: 
             console.log("bad debugLevel")
