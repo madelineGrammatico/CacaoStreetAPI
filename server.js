@@ -4,11 +4,13 @@ let DB = require('./db.config')
 const errorHandler =  require("./errors/errorHandler")
 
 const app = express()
-app.use(cors({
-    origin: "http://127.0.0.1:5500",
-    methods: "GET, POST, PATCH, DELETE",
-    allowedHeaders: "Origin, X-Requested-With, x-acces-token, role, Content, Accept, Content-Type, Authorization"
-}))
+app.use(cors(
+    // {
+    // origin: "http://127.0.0.1:5500",
+    // methods: "GET, POST, PATCH, DELETE",
+    // allowedHeaders: "Origin, X-Requested-With, x-acces-token, role, Content, Accept, Content-Type, Authorization"
+    // }
+))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true}))
 
@@ -18,9 +20,6 @@ const chocolate_router = require('./routes/chocolate')
 const comment_router = require('./routes/comment')
 
 app.use('/users', user_router)
-// app.get('/', (req, res) => {
-//     res.send("In progress")
-// })
 app.use('/auth', auth_router)
 app.use('/chocolate', chocolate_router)
 app.use('/comment', comment_router)
