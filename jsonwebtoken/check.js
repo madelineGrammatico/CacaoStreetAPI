@@ -10,7 +10,6 @@ const extractBearer = authorization => {
 }
 
 const checkTokenMiddleware = (req, res, next, needUser = true ) => {
-    console.log("needUser : ", needUser)
     const token= req.headers.authorization && extractBearer(req.headers.authorization)
     if(!token){
         return res.status(401).json({ message: "arhhhhhhhhhhhg where are your token ?!?!!"})
