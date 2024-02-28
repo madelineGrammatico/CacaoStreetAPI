@@ -77,7 +77,7 @@ exports.updateUser = async (req, res, next) => {
         }
 
         if(req.body.password) {
-            const hash = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUND))
+            const hash = await bcrypt.hash(req.body.password, parseInt(process.env.BCRYPT_SALT_ROUND))
             req.body.password = hash
         }
         await User.update(req.body, { where: { id: userId } })

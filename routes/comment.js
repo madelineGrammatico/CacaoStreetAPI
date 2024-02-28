@@ -1,7 +1,7 @@
 const express = require('express')
 
 const commentCtrl = require('../controllers/comment')
-const checkTokenMiddleware = require('../jsonwebtoken/check')
+const checkTokenMiddleware = require('../jsonwebtoken/checkUser')
 
 const router = express.Router()
 
