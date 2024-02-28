@@ -15,6 +15,8 @@ db.sequelize = sequelize
 db.User = require("./models/user") (sequelize)
 db.Chocolate =require("./models/chocolate") (sequelize)
 db.Comment = require("./models/comment") (sequelize)
+db.Admin = require("./models/admin") (sequelize)
+db.Reporting = require("./models/reporting") (sequelize)
 
 db.User.hasMany(db.Chocolate, {
     foreignKey: "user_Id",

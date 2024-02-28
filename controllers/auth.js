@@ -3,12 +3,12 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const DB = require("../db.config")
 const User = DB.User
+const Admin = DB.Admin
 const {UserError, AuthentificationError} = require('../errors/customError')
 
 
 exports.loginUser = async (req, res, next) => {
     
-
     try {
         const {email, password} = req.body
         if(!email || !password) {
@@ -41,5 +41,34 @@ exports.loginUser = async (req, res, next) => {
         //     res.status(500).json({ message: "DataBase Error", error: err })
         // }
         // res.status(err.statusCode || 500).json({ message: err.message, error: err})
+    }
+}
+
+exports.loginAdmin = async (req, res, next) => {
+    try {
+        const {email, password} = req.body
+        if(!email || !password) {
+            throw new AuthentificationError("Bad email or password", 0)
+        }
+
+        const admin = await Admin.findOne({ where: {email: email}, raw: true})
+        if (admin === null) {
+            throw new AuthentificationError("This account does not exists !")
+        }
+
+        const test = await Admin.checkPassword(password, admin.password)
+        if(!test) {
+            throw new AuthentificationError("Wrong password", 1)
+        }
+
+        const token = jwt.sign({
+            id: admin.id,
+            speudo: admin.speudo,
+            email: admin.email
+        }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_DURING })
+
+       return res.json({access_token: token})
+    } catch (err) {
+        next(err)
     }
 }
