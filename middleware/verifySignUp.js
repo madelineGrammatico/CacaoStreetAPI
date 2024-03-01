@@ -28,14 +28,12 @@ checkDuplicateUsernameOrEmail = (req, res, next) => {
         });
         return;
       }
-      console.log("l'email et le nom d'utilisateur sont libre")
       next();
     });
   });
 };
 
 checkRolesExisted = (req, res, next) => {
-  console.log("vérification du role de l'utilisateur")
   if (req.body.roles) {
     for (let i = 0; i < req.body.roles.length; i++) {
       if (!ROLES.includes(req.body.roles[i])) {
@@ -44,7 +42,6 @@ checkRolesExisted = (req, res, next) => {
         });
         return;
       }
-      console.log("l'utilisateur a bien un role")
     }
     
   }

@@ -10,17 +10,13 @@ const bcrypt = require('bcrypt')
 
 exports.signup = (req, res) => {
   // Save User to Database
-  console.log("l'utilisateur va être créer")
   User.create({
     username: req.body.username,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8)
   })
     .then(user => {
-        console.log("l'utilisateur a été créer, on role va être attribuer")
-        console.log(user)
       if (req.body.roles) {
-        console.log(Op)
         Role.findAll({
           where: {
             name: {

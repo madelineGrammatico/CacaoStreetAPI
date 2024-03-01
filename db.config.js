@@ -24,7 +24,7 @@ db.user.belongsToMany(db.role, {
   through: "user_roles"
 });
 
-db.ROLES = ["user", "admin", "moderator"];
+db.ROLES = ["user", "admin"];
 
 // const db = {}
 
@@ -83,11 +83,6 @@ function initial() {
      
     db.role.create({
         id: 2,
-        name: "moderator"
-    });
-     
-    db.role.create({
-        id: 3,
         name: "admin"
     });
 }

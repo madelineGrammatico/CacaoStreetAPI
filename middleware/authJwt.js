@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-// const config = require("../config/auth.config.js");
 const db = require("../db.config");
 const User = db.user;
 
@@ -21,7 +20,6 @@ verifyToken = (req, res, next) => {
         });
         }
         req.userId = decoded.id;
-        console.log("le token est bon")
         next();
     });
 };
@@ -35,7 +33,6 @@ isAdmin = (req, res, next) => {
           return;
         }
       }
-
       res.status(403).send({
         message: "Require Admin Role!"
       });
