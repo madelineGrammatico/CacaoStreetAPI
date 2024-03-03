@@ -21,12 +21,12 @@ const comment_router = require('./routes/comment')
 const admin_router = require('./routes/admin')
 const reporting_router = require('./routes/reporting')
 
-// app.use('/users', user_router)
-// app.use('/auth', auth_router)
-// app.use('/chocolate', chocolate_router)
-// app.use('/comment', comment_router)
-// app.use('/admin', admin_router)
-// app.use('/reporting', reporting_router)
+app.use('/users', user_router)
+app.use('/auth', auth_router)
+app.use('/chocolate', chocolate_router)
+app.use('/comment', comment_router)
+app.use('/admin', admin_router)
+app.use('/reporting', reporting_router)
 
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);

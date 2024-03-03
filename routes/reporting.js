@@ -2,11 +2,11 @@ const express = require('express')
 
 const reportingCtrl = require('../controllers/reporting')
 const checkTokenMiddleware = require('../jsonwebtoken/checkUser')
-const checkAdminMiddleware = require('../jsonwebtoken/checkAdmin')
+// const checkAdminMiddleware = require('../jsonwebtoken/checkAdmin')
 
 const router = express.Router()
 
-router.get('/', checkAdminMiddleware, reportingCtrl.getAllReportings)
+router.get('/', reportingCtrl.getAllReportings)
 
 router.get('/:id', checkTokenMiddleware, reportingCtrl.getReporting)
 
