@@ -1,6 +1,6 @@
 const db = require("../db.config");
 // const config = require("../config/auth.config");
-const User = db.user;
+const User = db.User;
 const Role = db.role;
 
 const Op = db.Sequelize.Op;
@@ -24,7 +24,6 @@ exports.signup = (req, res) => {
             }
           }
         }).then(roles => {
-            console.log(roles)
           user.setRoles(roles).then(() => {
             res.send({ message: "User was registered successfully!" });
           });
@@ -42,6 +41,7 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
+  console.log(req)
   User.findOne({
     where: {
       username: req.body.username

@@ -1,6 +1,6 @@
-const db = require("../db.config");
-const ROLES = db.ROLES;
-const User = db.user;
+const db = require("../db.config")
+const ROLES = db.ROLES
+const User = db.User
 
 checkDuplicateUsernameOrEmail = (req, res, next) => {
   // Username
@@ -12,8 +12,8 @@ checkDuplicateUsernameOrEmail = (req, res, next) => {
     if (user) {
       res.status(400).send({
         message: "Failed! Username is already in use!"
-      });
-      return;
+      })
+      return
     }
 
     // Email
@@ -25,13 +25,13 @@ checkDuplicateUsernameOrEmail = (req, res, next) => {
       if (user) {
         res.status(400).send({
           message: "Failed! Email is already in use!"
-        });
-        return;
+        })
+        return
       }
-      next();
-    });
-  });
-};
+      next()
+    })
+  })
+}
 
 checkRolesExisted = (req, res, next) => {
   if (req.body.roles) {
@@ -46,12 +46,11 @@ checkRolesExisted = (req, res, next) => {
     
   }
   
-  next();
-};
+  next()
+}
 
 const verifySignUp = {
   checkDuplicateUsernameOrEmail: checkDuplicateUsernameOrEmail,
   checkRolesExisted: checkRolesExisted
 };
-
-module.exports = verifySignUp;
+module.exports = verifySignUp
