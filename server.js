@@ -18,14 +18,12 @@ const user_router = require('./routes/users')
 const auth_router = require('./routes/auth')
 const chocolate_router = require('./routes/chocolate')
 const comment_router = require('./routes/comment')
-const admin_router = require('./routes/admin')
 const reporting_router = require('./routes/reporting')
 
 app.use('/users', user_router)
 app.use('/auth', auth_router)
 app.use('/chocolate', chocolate_router)
 app.use('/comment', comment_router)
-app.use('/admin', admin_router)
 app.use('/reporting', reporting_router)
 
 require('./routes/auth.routes')(app);
