@@ -5,6 +5,7 @@ const User = DB.User
 const bcrypt = require('bcrypt')
 
 exports.getAllUsers = (req, res) => {
+
     User.findAll()
         .then( users => res.json({data: users}))
         .catch(err => { next(err)})
@@ -18,7 +19,7 @@ exports.getUser = async (req, res, next) => {
             throw new RequestError("Missing Parameter")
         }
 
-        const user = await User.findOne({ where: { id: userId }, raw: true, attributes: ["id", "pseudo", "email"] })
+        const user = await User.findOne({ where: { id: userId }, raw: true, attributes: ["id", "username", "email"] })
         if((user === null)) {
             // return res.status(404).json({ message: "This user does not exist !"})
             throw new UserError("This user does not exist !", 0)
@@ -34,8 +35,8 @@ exports.getUser = async (req, res, next) => {
 
 exports.addUser = async ( req, res, next) => {
     try {
-        const {pseudo, email, password } = req.body
-        if(!pseudo || !email || !password) {
+        const {username, email, password } = req.body
+        if(!username || !email || !password) {
             // return res.status(400).json({ message: "Missing Data" })
             throw new RequestError("Missing Data")
         }

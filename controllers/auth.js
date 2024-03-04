@@ -30,7 +30,7 @@ exports.loginUser = async (req, res, next) => {
 
         const token = jwt.sign({
             id: user.id,
-            speudo: user.speudo,
+            username: user.username,
             email: user.email
         }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_DURING })
 
@@ -63,7 +63,7 @@ exports.loginAdmin = async (req, res, next) => {
 
         const token = jwt.sign({
             id: admin.id,
-            speudo: admin.speudo,
+            username: admin.username,
             email: admin.email
         }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_DURING })
 
