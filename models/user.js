@@ -1,14 +1,13 @@
-const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("Users", {
       id: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
         primaryKey: true,
-        // autoIncrement: true
       },
       username: {
-        type: DataTypes.STRING(50),
+        type: Sequelize.STRING(50),
         unique: true,
         allowNull: false
       },
@@ -18,13 +17,13 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false
       },
       password: {
-        type: Sequelize.STRING,
-        allowNull: false
+        type: Sequelize.STRING(64),
+        is: /^[0-9a-f]{64}$/i
       }
     },{ paranoid: true})
   
-    return User;
-  };
+    return User
+  }
 
 // const { DataTypes } = require('sequelize');
 // const bcrypt = require('bcrypt')
