@@ -18,13 +18,13 @@ verifyToken = (req, res, next) => {
             message: "Unauthorized!",
         })
         }
-        req.userId = decoded.id
+        req.user_Id = decoded.id
         next()
     })
 }
 
 isAdmin = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
+  User.findByPk(req.user_Id).then(user => {
     user.getRoles().then(roles => {
       for (let i = 0; i < roles.length; i++) {
         if (roles[i].name === "admin") {
