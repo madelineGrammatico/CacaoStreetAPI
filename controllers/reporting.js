@@ -42,8 +42,9 @@ exports.getReporting = async (req, res, next) => {
 exports.addReporting = async ( req, res, next,) => {
     
     try {
-        const user_Id = req.auth.user_Id
-        const {body, chocolate_Id} = req.body
+        const user_Id = req.user_Id
+        const body = req.body.body
+        const chocolate_Id = parseInt(req.body.chocolate_Id)
         if(!body || !chocolate_Id || !user_Id) {
             throw new RequestError("Missing Data")
         }
@@ -65,7 +66,7 @@ exports.addReporting = async ( req, res, next,) => {
 
 exports.updateReporting = async (req, res, next) => {
     try {
-        const user_Id = req.auth.user_Id
+        const user_Id = req.user_Id
         const reportingId = parseInt(req.params.id)
         if(!reportingId) {
             // return res.json(400).json({ message: "Missing Parameter"})
@@ -78,7 +79,7 @@ exports.updateReporting = async (req, res, next) => {
             throw new CommentError("This reporting does not exist !")
         }
 
-        if (reporting.user_comment_Id !== user_Id) {
+        if (reporting.user_Id !== user_Id) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
 
@@ -90,7 +91,7 @@ exports.updateReporting = async (req, res, next) => {
 
 exports.deleteReporting = async (req, res, next) => {
     try {
-        const user_Id = req.auth.user_Id
+        const user_Id = req.user_Id
         let reportingId = parseInt(req.params.id)
         if(!reportingId) {
             // return res.json(400).json({ message: "Missing Parameter"})
@@ -98,7 +99,7 @@ exports.deleteReporting = async (req, res, next) => {
         }
 
         const reporting = await Reporting.findOne({ where: {id: reportingId}, raw: true})
-        if (reporting.user_reporting_Id !== user_Id) {
+        if (reporting.user_Id !== user_Id) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
 

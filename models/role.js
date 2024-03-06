@@ -7,10 +7,10 @@ module.exports = (sequelize, Sequelize) => {
       name: {
         type: Sequelize.STRING
       }
-    });
+    })
   
-    return Role;
-  };
+    return Role
+  }
 
 // const { DataTypes } = require('sequelize')
 // // const DB = require("../db.config")

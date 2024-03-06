@@ -1,7 +1,7 @@
 const express = require('express')
-
+const { authJwt } = require("../middleware");
 const commentCtrl = require('../controllers/comment')
-const checkTokenMiddleware = require('../jsonwebtoken/checkUser')
+// const checkTokenMiddleware = require('../jsonwebtoken/checkUser')
 
 const router = express.Router()
 
@@ -9,10 +9,10 @@ router.get('/', commentCtrl.getAllComments)
 
 router.get('/:id', commentCtrl.getComment)
 
-router.post('', checkTokenMiddleware, commentCtrl.addComment)
+router.post('', [authJwt.verifyToken], commentCtrl.addComment)
 
-router.patch("/:id", checkTokenMiddleware, commentCtrl.updateComment)
+router.patch("/:id", [authJwt.verifyToken], commentCtrl.updateComment)
 
-router.delete("/:id", checkTokenMiddleware, commentCtrl.deleteComment)
+router.delete("/:id", [authJwt.verifyToken], commentCtrl.deleteComment)
 
 module.exports = router

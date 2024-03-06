@@ -1,19 +1,18 @@
 const express = require('express')
 
 const reportingCtrl = require('../controllers/reporting')
-const checkTokenMiddleware = require('../jsonwebtoken/checkUser')
-// const checkAdminMiddleware = require('../jsonwebtoken/checkAdmin')
+const { authJwt } = require('../middleware')
 
 const router = express.Router()
 
-router.get('/', reportingCtrl.getAllReportings)
+router.get('/', [authJwt.verifyToken, authJwt.isAdmin], reportingCtrl.getAllReportings)
 
-router.get('/:id', checkTokenMiddleware, reportingCtrl.getReporting)
+router.get('/:id', [authJwt.verifyToken], reportingCtrl.getReporting)
 
-router.post('', checkTokenMiddleware, reportingCtrl.addReporting)
+router.post('', [authJwt.verifyToken], reportingCtrl.addReporting)
 
-router.patch("/:id", checkTokenMiddleware, reportingCtrl.updateReporting)
+router.patch("/:id", [authJwt.verifyToken], reportingCtrl.updateReporting)
 
-router.delete("/:id", checkTokenMiddleware, reportingCtrl.deleteReporting)
+router.delete("/:id", [authJwt.verifyToken], reportingCtrl.deleteReporting)
 
 module.exports = router
