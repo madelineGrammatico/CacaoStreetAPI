@@ -21,6 +21,7 @@ db.ROLES = ["user", "admin"];
 db.Chocolate =require("./models/chocolate") (sequelize)
 db.Comment = require("./models/comment") (sequelize)
 db.Reporting = require("./models/reporting") (sequelize)
+db.Rating = require("./models/rating") (sequelize)
 
 
 db.role.belongsToMany(db.User, {
