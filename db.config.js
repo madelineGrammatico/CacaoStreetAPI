@@ -80,6 +80,25 @@ db.Reporting.belongsTo(db.Chocolate,{
     as:"Chocolate"
 })
 
+db.Chocolate.hasMany(db.Rating, {
+    foreignKey: "chocolate_Id",
+    as: "Rating",
+    onDelelte: "cascade"
+})
+db.Rating.belongsTo(db.Chocolate,{
+    foreignKey: "chocolate_Id",
+    as:"Chocolate"
+})
+db.User.hasMany(db.Rating, {
+    foreignKey: "user_Id",
+    as: "Rating",
+    onDelelte: "cascade"
+})
+db.Rating.belongsTo(db.User,{
+    foreignKey: "user_Id",
+    as:"User"
+})
+
 
 //delete for production
 function initial() {
