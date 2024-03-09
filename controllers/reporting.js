@@ -42,7 +42,7 @@ exports.getReporting = async (req, res, next) => {
 exports.addReporting = async ( req, res, next,) => {
     
     try {
-        const user_Id = req.user_Id
+        const user_Id = req.auth.user_Id
         const body = req.body.body
         const chocolate_Id = parseInt(req.body.chocolate_Id)
         if(!body || !chocolate_Id || !user_Id) {
@@ -66,7 +66,7 @@ exports.addReporting = async ( req, res, next,) => {
 
 exports.updateReporting = async (req, res, next) => {
     try {
-        const user_Id = req.user_Id
+        const user_Id = req.auth.user_Id
         const reportingId = parseInt(req.params.id)
         if(!reportingId) {
             // return res.json(400).json({ message: "Missing Parameter"})
@@ -91,7 +91,7 @@ exports.updateReporting = async (req, res, next) => {
 
 exports.deleteReporting = async (req, res, next) => {
     try {
-        const user_Id = req.user_Id
+        const user_Id = req.auth.user_Id
         let reportingId = parseInt(req.params.id)
         if(!reportingId) {
             // return res.json(400).json({ message: "Missing Parameter"})

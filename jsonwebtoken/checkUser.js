@@ -10,6 +10,7 @@ const extractBearer = authorization => {
 }
 
 const checkTokenMiddleware = (req, res, next, needUser = true ) => {
+    console.log("dans l'ancien")
     const token= req.headers.authorization && extractBearer(req.headers.authorization)
     if(!token){
         return res.status(401).json({ message: "arhhhhhhhhhhhg where are your token ?!?!!"})
@@ -19,6 +20,7 @@ const checkTokenMiddleware = (req, res, next, needUser = true ) => {
         if(err) {
             return res.status(401).json({ message: "Bad token" })
         }
+        console.log(decodedToken)
         if (needUser === true) {
             req.auth = { user_Id: decodedToken.id }
         }

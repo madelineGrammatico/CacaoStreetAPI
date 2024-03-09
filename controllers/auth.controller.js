@@ -1,11 +1,10 @@
-const db = require("../db.config");
-// const config = require("../config/auth.config");
-const User = db.User;
-const Role = db.role;
+const db = require("../db.config")
+const User = db.User
+const Role = db.role
 
-const Op = db.Sequelize.Op;
+const Op = db.Sequelize.Op
 
-var jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken")
 const bcrypt = require('bcrypt')
 
 exports.signup = (req, res) => {
@@ -25,20 +24,19 @@ exports.signup = (req, res) => {
           }
         }).then(roles => {
           user.setRoles(roles).then(() => {
-            res.send({ message: "User was registered successfully!" });
-          });
-        });
+            res.send({ message: "User was registered successfully!" })
+          })
+        })
       } else {
-        // user role = 1
         user.setRoles([1]).then(() => {
-          res.send({ message: "User was registered successfully!" });
-        });
+          res.send({ message: "User was registered successfully!" })
+        })
       }
     })
     .catch(err => {
-      res.status(500).send({ message: err.message });
-    });
-};
+      res.status(500).send({ message: err.message })
+    })
+}
 
 exports.signin = (req, res) => {
   User.findOne({
@@ -51,7 +49,7 @@ exports.signin = (req, res) => {
         return res.status(404).send({ message: "User Not found." });
       }
 
-      var passwordIsValid = bcrypt.compareSync(
+      const passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password
       );
@@ -60,18 +58,18 @@ exports.signin = (req, res) => {
         return res.status(401).send({
           accessToken: null,
           message: "Invalid Password!"
-        });
+        })
       }
+      console.log("jwt sign :", req.body.roles)
+      const token = jwt.sign({ id: user.id , roles: req.body.roles},
+        process.env.JWT_SECRET,
+        {
+          algorithm: 'HS256',
+          allowInsecureKeySizes: true,
+          expiresIn: 86400, // 24 hours
+        })
 
-      const token = jwt.sign({ id: user.id },
-                    process.env.JWT_SECRET,
-                    {
-                        algorithm: 'HS256',
-                        allowInsecureKeySizes: true,
-                        expiresIn: 86400, // 24 hours
-                    });
-
-      var authorities = [];
+      const authorities = [];
       user.getRoles().then(roles => {
         for (let i = 0; i < roles.length; i++) {
           authorities.push("ROLE_" + roles[i].name.toUpperCase());
@@ -82,10 +80,10 @@ exports.signin = (req, res) => {
           email: user.email,
           roles: authorities,
           accessToken: token
-        });
-      });
+        })
+      })
     })
     .catch(err => {
       res.status(500).send({ message: err.message });
-    });
-};
+    })
+}
