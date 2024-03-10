@@ -31,8 +31,8 @@ exports.getChocolate = async (req, res, next) => {
 exports.addChocolate = async ( req, res, next) => {
     try {
         const user_Id = req.auth.user_Id
-        const {name, addressShop, position, rate, hours, price } = req.body
-        if(!name || !addressShop || !position || !rate || !hours || !price || !user_Id) {
+        const {name, addressShop, position, hours, price } = req.body
+        if(!name || !addressShop || !position || !hours || !price || !user_Id) {
             throw new RequestError("Missing Data")
         }
         
@@ -42,7 +42,7 @@ exports.addChocolate = async ( req, res, next) => {
         }
         
         let chocolate = {
-            name, addressShop, position, rate, hours, price, user_Id,
+            name, addressShop, position, hours, price, user_Id,
         }
         chocolate = await Chocolate.create(chocolate)
         return res.json({ message: "Chocolate Created", data: chocolate })
