@@ -1,6 +1,8 @@
 const DB = require("../db.config")
-const Rating = DB.Comment
+const Rating = DB.Rating
+const Chocolate = DB.Chocolate
 const { CommentError, RequestError } = require('../errors/customError')
+
 
 exports.getAllRatings = (req, res) => {
     Rating.findAll()
@@ -40,25 +42,27 @@ exports.getRating = async (req, res, next) => {
 }
 
 exports.addRating = async ( req, res, next,) => {
-    
+
     try {
         const user_Id = req.auth.user_Id
-        const {rate} = req.body
-        const chocolate_Id = parseInt(req.body.chocolate_Id)
-        if(!body || !rate || !chocolate_Id || !user_Id) {
+        const {rate, chocolate_Id} = req.body
+        // const chocolate_Id = parseInt(req.body.chocolate_Id)
+        if( !rate || !user_Id) {
             throw new RequestError("Missing Data")
         }
 
-        const chocolate = await DB.Chocolate.findOne({ where: { id: chocolate_Id }, raw: true })
+        const chocolate = await Chocolate.findOne({ where: { id: chocolate_Id }, raw: true })
         if(chocolate === null) {
             throw new CommentError(`the chocolate of the comment don't exists`)
         }
         
         const ratingWithUser = {
-            rate, chocolate_Id, 
-            user_Id: user_Id
+            rate, 
+            user_Id: user_Id,
+            chocolate_Id
         }
         const rating = await Rating.create(ratingWithUser)
+        .then(rating => rating.setChocolates(req.body.rate))
         return res.json({ message: "Comment Created", data: rating })
         
     } catch(err) { next(err) }

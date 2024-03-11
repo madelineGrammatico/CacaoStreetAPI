@@ -1,17 +1,17 @@
 const express = require('express')
 const { authJwt } = require("../middleware");
-// const commentCtrl = require('../controllers/comment')
+const ratingCtrl = require('../controllers/rating')
 
 const router = express.Router()
 
-router.get('/', [authJwt.verifyToken, authJwt.isAdmin], commentCtrl.getAllRatings)
+router.get('/', [authJwt.verifyToken, authJwt.isAdmin], ratingCtrl.getAllRatings)
 
-router.get('/:id',[authJwt.verifyToken], commentCtrl.getRating)
+router.get('/:id',[authJwt.verifyToken], ratingCtrl.getRating)
 
-router.post('', [authJwt.verifyToken], commentCtrl.addRating)
+router.post('', [authJwt.verifyToken], ratingCtrl.addRating)
 
-router.patch("/:id", [authJwt.verifyToken], commentCtrl.updateRating)
+router.patch("/:id", [authJwt.verifyToken], ratingCtrl.updateRating)
 
-router.delete("/:id", [authJwt.verifyToken], commentCtrl.deleteRating)
+router.delete("/:id", [authJwt.verifyToken], ratingCtrl.deleteRating)
 
 module.exports = router

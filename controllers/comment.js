@@ -43,9 +43,9 @@ exports.addComment = async ( req, res, next,) => {
     
     try {
         const user_Id = req.auth.user_Id
-        const {body, rate} = req.body
+        const {body} = req.body
         const chocolate_Id = parseInt(req.body.chocolate_Id)
-        if(!body || !rate || !chocolate_Id || !user_Id) {
+        if(!body || !chocolate_Id || !user_Id) {
             throw new RequestError("Missing Data")
         }
 
@@ -55,7 +55,7 @@ exports.addComment = async ( req, res, next,) => {
         }
         
         const commentWithUser = {
-            body, rate, chocolate_Id, 
+            body, chocolate_Id, 
             user_comment_Id: user_Id
         }
         const comment = await Comment.create(commentWithUser)

@@ -8,7 +8,6 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require('bcrypt')
 
 exports.signup = (req, res) => {
-  // Save User to Database
   User.create({
     username: req.body.username,
     email: req.body.email,
@@ -52,7 +51,7 @@ exports.signin = (req, res) => {
       const passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password
-      );
+      )
 
       if (!passwordIsValid) {
         return res.status(401).send({
@@ -60,14 +59,14 @@ exports.signin = (req, res) => {
           message: "Invalid Password!"
         })
       }
-      console.log("jwt sign :", req.body.roles)
       const token = jwt.sign({ id: user.id , roles: req.body.roles},
         process.env.JWT_SECRET,
         {
           algorithm: 'HS256',
           allowInsecureKeySizes: true,
           expiresIn: 86400, // 24 hours
-        })
+        }
+      )
 
       const authorities = [];
       user.getRoles().then(roles => {

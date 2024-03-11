@@ -26,7 +26,7 @@ const rating_router =require("./routes/rating")
 app.use('/chocolate', chocolate_router)
 app.use('/comment', comment_router)
 app.use('/reporting', reporting_router)
-app.use('/rating', rating)
+app.use('/rating', rating_router)
 
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
