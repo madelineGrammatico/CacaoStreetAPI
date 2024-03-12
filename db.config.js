@@ -32,7 +32,7 @@ db.User.belongsToMany(db.role, {
 });
 
 db.Rating.belongsToMany(db.Chocolate, {
-    through: "chocolate_roles"
+    through: "chocolate_rating"
   });
 db.Chocolate.belongsToMany(db.Rating, {
     through: "chocolate_rating"

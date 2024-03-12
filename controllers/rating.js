@@ -45,13 +45,15 @@ exports.addRating = async ( req, res, next,) => {
 
     try {
         const user_Id = req.auth.user_Id
-        const {rate, chocolate_Id} = req.body
+        const chocolate_Id= parseInt(req.body.chocolate_Id)
+        const {rate} = req.body
         // const chocolate_Id = parseInt(req.body.chocolate_Id)
         if( !rate || !user_Id) {
             throw new RequestError("Missing Data")
         }
 
-        const chocolate = await Chocolate.findOne({ where: { id: chocolate_Id }, raw: true })
+        // const chocolate = await Chocolate.findOne({ where: { id: chocolate_Id }, raw: true })
+        const chocolate = await Chocolate.findByPk(chocolate_Id)
         if(chocolate === null) {
             throw new CommentError(`the chocolate of the comment don't exists`)
         }
@@ -62,7 +64,7 @@ exports.addRating = async ( req, res, next,) => {
             chocolate_Id
         }
         const rating = await Rating.create(ratingWithUser)
-        .then(rating => rating.setChocolates(req.body.rate))
+        rating.addChocolate(chocolate)
         return res.json({ message: "Comment Created", data: rating })
         
     } catch(err) { next(err) }
