@@ -46,7 +46,7 @@ exports.addRating = async ( req, res, next,) => {
     try {
         const user_Id = req.auth.user_Id
         const chocolate_Id= parseInt(req.body.chocolate_Id)
-        const {rate} = req.body
+        const rate = parseInt(req.body.rate)
         // const chocolate_Id = parseInt(req.body.chocolate_Id)
         if( !rate || !user_Id) {
             throw new RequestError("Missing Data")
@@ -65,6 +65,18 @@ exports.addRating = async ( req, res, next,) => {
         }
         const rating = await Rating.create(ratingWithUser)
         rating.addChocolate(chocolate)
+
+        const ratingsAssociation = await DB.Chocolate_Rating.findAll({
+            where: {
+            chocolateId: chocolate_Id
+            }
+        })
+        console.log(ratingsAssociation)
+
+
+
+
+
         return res.json({ message: "Comment Created", data: rating })
         
     } catch(err) { next(err) }

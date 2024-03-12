@@ -22,6 +22,9 @@ db.Chocolate =require("./models/chocolate") (sequelize)
 db.Comment = require("./models/comment") (sequelize)
 db.Reporting = require("./models/reporting") (sequelize)
 db.Rating = require("./models/rating") (sequelize)
+db.Chocolate_Rating = chocolate_rating = sequelize.define("Chocolate_Rating", {}, { timestamps: false });
+db.Chocolate.belongsToMany(db.Rating, { through: db.Chocolate_Rating})
+db.Rating.belongsToMany(db.Chocolate, { through: db.Chocolate_Rating})
 
 
 db.role.belongsToMany(db.User, {
@@ -30,13 +33,15 @@ db.role.belongsToMany(db.User, {
 db.User.belongsToMany(db.role, {
     through: "user_roles"
 });
+// db.Chocolate.belongsToMany(db.Rating, { through: db.Chocolate_Rating})
+// db.Rating.belongsToMany(Chocolate, { through: db.Chocolate_Rating})
 
-db.Rating.belongsToMany(db.Chocolate, {
-    through: "chocolate_rating"
-  });
-db.Chocolate.belongsToMany(db.Rating, {
-    through: "chocolate_rating"
-});
+// db.Rating.belongsToMany(db.Chocolate, {
+//     through: "chocolate_rating"
+//   });
+// db.Chocolate.belongsToMany(db.Rating, {
+//     through: "chocolate_rating"
+// });
 
 db.User.hasMany(db.Chocolate, {
     foreignKey: "user_Id",

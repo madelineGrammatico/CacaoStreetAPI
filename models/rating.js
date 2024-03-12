@@ -6,7 +6,6 @@ module.exports = (sequelize) => {
             primaryKey: true,
             autoIncrement: true
         },
-        
         rate: {
             type: DataTypes.INTEGER(1),
             allowNull: false
