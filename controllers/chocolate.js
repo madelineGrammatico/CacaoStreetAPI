@@ -51,9 +51,11 @@ exports.addChocolate = async ( req, res, next) => {
 }
 
 exports.updateChocolate = async ( req, res, next) => {
+    console.log("dans la modif du chocolat")
+    console.log("req chocolate : ", req.body)
     try {
         const user_Id = req.auth.user_Id
-        const chocolateId = parseInt(req.params.id)
+        const chocolateId = parseInt(req.params.id) || req.body.chocolate_Id
         if(!chocolateId) {
             return res.json(400).json({ message: "Missing Parameter"})
         }

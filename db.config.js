@@ -1,4 +1,5 @@
 const { Sequelize} = require('sequelize')
+const { DataTypes } = require('sequelize')
 
 let sequelize = new Sequelize(
     process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
@@ -22,7 +23,7 @@ db.Chocolate =require("./models/chocolate") (sequelize)
 db.Comment = require("./models/comment") (sequelize)
 db.Reporting = require("./models/reporting") (sequelize)
 db.Rating = require("./models/rating") (sequelize)
-db.Chocolate_Rating = chocolate_rating = sequelize.define("Chocolate_Rating", {}, { timestamps: false });
+db.Chocolate_Rating = sequelize.define("Chocolate_Rating", {}, { timestamps: false });
 db.Chocolate.belongsToMany(db.Rating, { through: db.Chocolate_Rating})
 db.Rating.belongsToMany(db.Chocolate, { through: db.Chocolate_Rating})
 

@@ -23,8 +23,8 @@ module.exports =(sequelize) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        rate: {
-            type: DataTypes.INTEGER,
+        averageRating: {
+            type: DataTypes.FLOAT(3),
             allowNull: true
         },
         price: {
