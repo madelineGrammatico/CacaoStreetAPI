@@ -59,7 +59,7 @@ exports.addUser = async ( req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
     try {
-        const user_Id = req.user_Id
+        const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
             // return res.status(400).json({ message: "Missing parameter" })
@@ -72,8 +72,9 @@ exports.updateUser = async (req, res, next) => {
             // return res.status(404).json({ message: "This user does not exist !"})
             throw new UserError("This user does not exist !",0)
         }
-
-        if (user.id !== user_Id) {
+        console.log(req.auth)
+        console.log("admin?",req.auth.roles.some((role) => role === "admin"))
+        if (user.id !== user_Id || req.auth.roles.some((role) => role === "admin" )) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
 
@@ -92,7 +93,7 @@ exports.updateUser = async (req, res, next) => {
 
 exports.untrashUser = async ( req, res, next) => {
     try {
-        // const user_Id = req.user_Id
+        // const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
             throw new RequestError("Missing parameter")
@@ -112,7 +113,7 @@ exports.untrashUser = async ( req, res, next) => {
 
 exports.trashUser = async (req, res, next) => {
     try {
-        const user_Id = req.user_Id
+        const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
            throw new RequestError("Missing parameter")
@@ -132,7 +133,7 @@ exports.trashUser = async (req, res, next) => {
 
 exports.deleteUser = async (req, res, next) => {
     try {
-        const user_Id = req.user_Id
+        const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
             throw new RequestError("Missing parameter")

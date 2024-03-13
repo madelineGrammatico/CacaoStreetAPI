@@ -1,27 +1,26 @@
 const { DataTypes } = require('sequelize')
-// const DB = require("../db.config")
 module.exports = (sequelize) => {
-    const Comment = sequelize.define("Comment", {
+    const Rating = sequelize.define("Rating", {
         id: {
             type: DataTypes.INTEGER(11),
             primaryKey: true,
             autoIncrement: true
         },
-        body: {
-            type: DataTypes.STRING(550),
+        rate: {
+            type: DataTypes.INTEGER(1),
             allowNull: false
         },
-        // rate: {
-        //     type: DataTypes.INTEGER(1),
-        //     allowNull: false
-        // },
         chocolate_Id: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        user_Id: {
             type: DataTypes.INTEGER,
             allowNull: false
         }
         
     })
-    return Comment
+    return Rating
 }
 
 
@@ -29,4 +28,4 @@ module.exports = (sequelize) => {
 // User.sync({ force: true })
 // User.sync({ alter: true })
 
-// module.exports = Comment
+// module.exports = Rating

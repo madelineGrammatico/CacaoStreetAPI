@@ -30,9 +30,9 @@ exports.getChocolate = async (req, res, next) => {
 
 exports.addChocolate = async ( req, res, next) => {
     try {
-        const user_Id = req.user_Id
-        const {name, addressShop, position, rate, hours, price } = req.body
-        if(!name || !addressShop || !position || !rate || !hours || !price || !user_Id) {
+        const user_Id = req.auth.user_Id
+        const {name, addressShop, position, hours, price } = req.body
+        if(!name || !addressShop || !position || !hours || !price || !user_Id) {
             throw new RequestError("Missing Data")
         }
         
@@ -42,7 +42,7 @@ exports.addChocolate = async ( req, res, next) => {
         }
         
         let chocolate = {
-            name, addressShop, position, rate, hours, price, user_Id,
+            name, addressShop, position, hours, price, user_Id,
         }
         chocolate = await Chocolate.create(chocolate)
         return res.json({ message: "Chocolate Created", data: chocolate })
@@ -51,9 +51,11 @@ exports.addChocolate = async ( req, res, next) => {
 }
 
 exports.updateChocolate = async ( req, res, next) => {
+    console.log("dans la modif du chocolat")
+    console.log("req chocolate : ", req.body)
     try {
-        const user_Id = req.user_Id
-        const chocolateId = parseInt(req.params.id)
+        const user_Id = req.auth.user_Id
+        const chocolateId = parseInt(req.params.id) || req.body.chocolate_Id
         if(!chocolateId) {
             return res.json(400).json({ message: "Missing Parameter"})
         }
@@ -74,7 +76,7 @@ exports.updateChocolate = async ( req, res, next) => {
 
 exports.deleteChocolate = async ( req, res, next) => {
     try {
-        const user_Id = req.user_Id
+        const user_Id = req.auth.user_Id
         let chocolateId = parseInt(req.params.id)
         if(!chocolateId) {
             return res.json(400).json({ message: "Missing Parameter"})

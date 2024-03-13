@@ -10,17 +10,22 @@ verifyToken = (req, res, next) => {
     })
   }
 
-  jwt.verify(token,
+  jwt.verify(
+    token,
     process.env.JWT_SECRET,
     (err, decoded) => {
-        if (err) {
+      if (err) {
         return res.status(401).send({
             message: "Unauthorized!",
         })
-        }
-        req.user_Id = decoded.id
-        next()
-    })
+      }
+      req.auth = {
+        user_Id: decoded.id,
+        roles: decoded.roles
+      }
+      next()
+    }
+  )
 }
 
 isAdmin = (req, res, next) => {
