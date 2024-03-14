@@ -2,7 +2,10 @@ const DB = require("../db.config")
 const Rating = DB.Rating
 const Chocolate = DB.Chocolate
 const { CommentError, RequestError } = require('../errors/customError')
+const chocolateCtrl = require('../controllers/chocolate')
 // const { Sequelize, Op } = require('sequelize');
+
+
 const calculateAverage = async (chocolate_Id) => {
     const ratings = await Rating.findAll({
         include: [{
@@ -62,14 +65,18 @@ exports.getRating = async (req, res, next) => {
 }
 
 exports.addRating = async ( req, res, next,) => {
+    console.log("dans le controller pour ajouter une note")
     try {
+        console.log("dans le try")
         const user_Id = req.auth.user_Id
         const chocolate_Id= parseInt(req.body.chocolate_Id)
         const rate = parseInt(req.body.rate)
-       
+        const comment_Id = parseInt(req.body.comment_Id)
+        console.log("verification de la data")
         if( !rate || !user_Id) {
             throw new RequestError("Missing Data")
         }
+        console.log("vérification du chocolat_Id")
         const chocolate = await Chocolate.findByPk(chocolate_Id)
         if(chocolate === null) {
             throw new CommentError(`the chocolate of the comment don't exists`)
@@ -78,18 +85,22 @@ exports.addRating = async ( req, res, next,) => {
         const ratingWithUser = {
             rate, 
             user_Id: user_Id,
-            chocolate_Id
+            chocolate_Id, 
+            comment_Id: comment_Id
         }
+        console.log("creation de la nouvelle note")
         const rating = await Rating.create(ratingWithUser)
         rating.addChocolate(chocolate)
 
+        console.log("calcul de la moyenne")
         const averageRating = await calculateAverage(chocolate_Id)
+        // const newReq = req
         req.body = {
             averageRating: averageRating,
             chocolate_Id: chocolate_Id
         }
 
-        next()
+        chocolateCtrl.updateChocolate(req, res, next)
     } catch(err) { next(err) }
 }
 

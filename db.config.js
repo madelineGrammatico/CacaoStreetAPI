@@ -92,6 +92,14 @@ db.Reporting.belongsTo(db.Chocolate,{
     as:"Chocolate"
 })
 
+db.Comment.hasOne(db.Rating, {
+    foreignKey: "comment_Id",
+    as: "Comment"
+})
+db.Rating.belongsTo(db.Comment, {
+    foreignKey: "comment_Id",
+    as: "Rating"
+})
 // db.Chocolate.hasMany(db.Rating, {
 //     foreignKey: "chocolate_Id",
 //     as: "Rating",

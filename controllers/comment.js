@@ -1,6 +1,7 @@
 const DB = require("../db.config")
 const Comment = DB.Comment
 const { CommentError, RequestError } = require('../errors/customError')
+const ratingCtrl = require('../controllers/rating')
 
 exports.getAllComments = (req, res) => {
     Comment.findAll()
@@ -40,7 +41,7 @@ exports.getComment = async (req, res, next) => {
 }
 
 exports.addComment = async ( req, res, next,) => {
-    
+    console.log("dans le controller pour ajouter un commentaire")
     try {
         const user_Id = req.auth.user_Id
         const {body} = req.body
@@ -59,7 +60,19 @@ exports.addComment = async ( req, res, next,) => {
             user_comment_Id: user_Id
         }
         const comment = await Comment.create(commentWithUser)
-        return res.json({ message: "Comment Created", data: comment })
+        if(req.body.rate) {
+            console.log("note trouvé ")
+            const rate = req.body.rate
+            req.body = {
+                rate: rate,
+                chocolate_Id: chocolate_Id, 
+                comment_Id: comment.id
+            }
+            // next(req, res, next)
+            ratingCtrl.addRating(req, res, next)
+        } 
+            return res.json({ message: "Comment Created", data: comment })
+        
         
     } catch(err) { next(err) }
 }
@@ -82,8 +95,16 @@ exports.updateComment = async (req, res, next) => {
         if (comment.user_comment_Id !== user_Id) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
-
+        
         await Comment.update(req.body, { where: { id: commentId } })
+        if(req.body.rate) {
+            const rating = DB.Rating.findOne({where: {comment_Id: commentId}})
+            if(rating) {
+                ratingCtrl.updateRating(req, res, next)
+            } else {
+                ratingCtrl.addRating(req, res, next)
+            }
+        }
         return res.json({ message: "Comment Updated" })
 
     } catch(err) { next(err) }

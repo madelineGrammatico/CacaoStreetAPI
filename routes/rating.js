@@ -9,7 +9,7 @@ router.get('/', [authJwt.verifyToken, authJwt.isAdmin], ratingCtrl.getAllRatings
 
 router.get('/:id',[authJwt.verifyToken], ratingCtrl.getRating)
 
-router.post('', [authJwt.verifyToken], ratingCtrl.addRating, chocolateCtrl.updateChocolate)
+router.post('', [authJwt.verifyToken], ratingCtrl.addRating)
 
 router.patch("/:id", [authJwt.verifyToken], ratingCtrl.updateRating, chocolateCtrl.updateChocolate)
 

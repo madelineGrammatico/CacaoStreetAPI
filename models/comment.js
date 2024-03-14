@@ -13,12 +13,13 @@ module.exports = (sequelize) => {
         },
         // rate: {
         //     type: DataTypes.INTEGER(1),
-        //     allowNull: false
+        //     allowNull: true
         // },
         chocolate_Id: {
             type: DataTypes.INTEGER,
             allowNull: false
-        }
+        },
+        
         
     })
     return Comment
