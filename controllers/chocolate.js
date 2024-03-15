@@ -29,6 +29,7 @@ exports.getChocolate = async (req, res, next) => {
 }
 
 exports.addChocolate = async ( req, res, next) => {
+    console.log("auth : ",req.auth)
     try {
         const user_Id = req.auth.user_Id
         const {name, addressShop, position, hours, price } = req.body
@@ -91,7 +92,7 @@ exports.deleteChocolate = async ( req, res, next) => {
         }
 
         await Chocolate.destroy({ where: {id: chocolateId}, force: true})
-        return res.status(204).json({})
+        return res.status(204).json({ message: "chocolate delete"})
 
     } catch(err) { next(err) }
 }
