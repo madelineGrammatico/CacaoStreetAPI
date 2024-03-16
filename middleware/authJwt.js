@@ -25,18 +25,18 @@ verifyToken = async(req, res, next) => {
       }
 
       const user = await User.findByPk(req.auth.user_Id)
-        await user.getRoles().then(roles => {
-          for (let i = 0; i < roles.length; i++) {
-            console.log("role :", roles[i].name)
-            req.auth.roles.push(roles[i].name)
-          }
-        })
+      await user.getRoles().then(roles => {
+        for (let i = 0; i < roles.length; i++) {
+          console.log("role :", roles[i].name)
+          req.auth.roles.push(roles[i].name)
+        }
+      })
       
       console.log("tableau :", req.auth.roles)
       
     }
   )
-
+  next()
   
 }
 
