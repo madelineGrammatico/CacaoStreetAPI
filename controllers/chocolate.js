@@ -29,7 +29,7 @@ exports.getChocolate = async (req, res, next) => {
 }
 
 exports.addChocolate = async ( req, res, next) => {
-    console.log("auth : ",req.auth)
+    console.log("auth : ",req.auth.roles.some((role)=> {return role === "admin"}))
     try {
         const user_Id = req.auth.user_Id
         const {name, addressShop, position, hours, price } = req.body
@@ -65,7 +65,7 @@ exports.updateChocolate = async ( req, res, next) => {
         if(chocolate === null) {
             return res.json(404).json({ message: "chocolate does'nt exist"})
         }
-        if (chocolate.user_Id !== user_Id) {
+        if (chocolate.user_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
         
@@ -87,7 +87,7 @@ exports.deleteChocolate = async ( req, res, next) => {
         if(chocolate === null) {
             return res.json(404).json({ message: "chocolate does'nt exist"})
         }
-        if (chocolate.user_Id !== user_Id) {
+        if (chocolate.user_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
 

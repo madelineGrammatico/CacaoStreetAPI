@@ -79,7 +79,7 @@ exports.updateReporting = async (req, res, next) => {
             throw new CommentError("This reporting does not exist !")
         }
 
-        if (reporting.user_Id !== user_Id) {
+        if (reporting.user_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
 
@@ -99,7 +99,7 @@ exports.deleteReporting = async (req, res, next) => {
         }
 
         const reporting = await Reporting.findOne({ where: {id: reportingId}, raw: true})
-        if (reporting.user_Id !== user_Id) {
+        if (reporting.user_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
 

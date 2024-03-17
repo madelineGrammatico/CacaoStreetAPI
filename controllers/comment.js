@@ -92,7 +92,7 @@ exports.updateComment = async (req, res, next) => {
             throw new CommentError("This comment does not exist !")
         }
 
-        if (comment.user_comment_Id !== user_Id) {
+        if (comment.user_comment_Id !== user_Id ||  !req.auth.roles.some((role)=> {return role === "admin"})) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
         
@@ -120,7 +120,7 @@ exports.deleteComment = async (req, res, next) => {
         }
 
         const comment = await Comment.findOne({ where: {id: commentId}, raw: true})
-        if (comment.user_comment_Id !== user_Id) {
+        if (comment.user_comment_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
 

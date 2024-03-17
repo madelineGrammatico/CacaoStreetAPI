@@ -72,9 +72,7 @@ exports.updateUser = async (req, res, next) => {
             // return res.status(404).json({ message: "This user does not exist !"})
             throw new UserError("This user does not exist !",0)
         }
-        console.log(req.auth)
-        console.log("admin?",req.auth.roles.some((role) => role === "admin"))
-        if (user.id !== user_Id || req.auth.roles.some((role) => role === "admin" )) {
+        if (user.id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
 
@@ -120,7 +118,7 @@ exports.trashUser = async (req, res, next) => {
         }
 
         const user = await User.findOne({ where: {id: userId}, raw: true})
-        if (user.id !== user_Id) {
+        if (user.id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
         
@@ -140,7 +138,7 @@ exports.deleteUser = async (req, res, next) => {
         }
         
         const user = await User.findOne({ where: {id: userId}, raw: true})
-        if (user.id !== user_Id) {
+        if (user.id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
 
