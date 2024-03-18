@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken")
 const db = require("../db.config")
 const User = db.User
 
-verifyToken = async(req, res, next) => {
+verifyToken = (req, res, next) => {
   let token = req.headers["x-access-token"]
   if (!token) {
     return res.status(403).send({
@@ -10,7 +10,7 @@ verifyToken = async(req, res, next) => {
     })
   }
 
-  await jwt.verify(
+  jwt.verify(
     token,
     process.env.JWT_SECRET,
     async(err, decoded) => {
@@ -23,28 +23,18 @@ verifyToken = async(req, res, next) => {
         user_Id: decoded.id,
         roles: []
       }
-
       const user = await User.findByPk(req.auth.user_Id)
-      await user.getRoles().then(roles => {
-        for (let i = 0; i < roles.length; i++) {
-          console.log("role :", roles[i].name)
-          req.auth.roles.push(roles[i].name)
-        }
+      const roles = await user.getRoles()       
+      await roles.map((role) => {
+        req.auth.roles.push(role.name)
       })
-      
-      console.log("tableau :", req.auth.roles)
-      
-    }
-  )
-  next()
-  
+      next()
+    })
 }
 
 isAdmin = (req, res, next) => {
   User.findByPk(req.auth.user_Id).then(user => {
-    console.log(user)
     user.getRoles().then(roles => {
-      console.log("roles : ", roles )
       for (let i = 0; i < roles.length; i++) {
         if (roles[i].name === "admin") {
           next()

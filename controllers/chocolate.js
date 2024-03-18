@@ -29,7 +29,6 @@ exports.getChocolate = async (req, res, next) => {
 }
 
 exports.addChocolate = async ( req, res, next) => {
-    console.log("auth : ",req.auth.roles.some((role)=> {return role === "admin"}))
     try {
         const user_Id = req.auth.user_Id
         const {name, addressShop, position, hours, price } = req.body
@@ -44,6 +43,7 @@ exports.addChocolate = async ( req, res, next) => {
         
         let chocolate = {
             name, addressShop, position, hours, price, user_Id,
+            allowed: false
         }
         chocolate = await Chocolate.create(chocolate)
         return res.json({ message: "Chocolate Created", data: chocolate })
@@ -52,8 +52,6 @@ exports.addChocolate = async ( req, res, next) => {
 }
 
 exports.updateChocolate = async ( req, res, next) => {
-    console.log("dans la modif du chocolat")
-    console.log("req chocolate : ", req.body)
     try {
         const user_Id = req.auth.user_Id
         const chocolateId = parseInt(req.params.id) || req.body.chocolate_Id
@@ -65,12 +63,17 @@ exports.updateChocolate = async ( req, res, next) => {
         if(chocolate === null) {
             return res.json(404).json({ message: "chocolate does'nt exist"})
         }
-        if (chocolate.user_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
-            return res.json(404).json({ message: "You don't have the right for this"})
+        const isAdmin = req.auth.roles.some((role)=> {
+            return role === "admin"})
+        if (isAdmin || chocolate.user_Id === user_Id ) {
+            
+            const updateChocolate = {...req.body}
+            !isAdmin ? updateChocolate.allowed = false : null
+            await Chocolate.update(req.body, { where: { id: chocolateId } })
+            return res.json({ message: "Chocolate Updated" })
         }
+        return res.json(409).json({ message: "You don't have the right for this"})
         
-        await Chocolate.update(req.body, { where: { id: chocolateId } })
-        return res.json({ message: "Chocolate Updated" })
 
     } catch(err) { next(err) }
 }
