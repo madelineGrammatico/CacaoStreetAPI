@@ -84,13 +84,13 @@ exports.allowedChocolate = async (req, res, next) => {
         if(!chocolateId) {
             return res.json(400).json({ message: "Missing Parameter"})
         }
-
         const chocolate = await Chocolate.findOne({ where: {id: chocolateId}, raw: true})
         if(chocolate === null) {
             return res.json(404).json({ message: "chocolate does'nt exist"})
         }
-       
-        req.body.updateChocolate.allowed = true
+        req.body.allowed = true
+
+        console.log(req.body.allowed)
         await Chocolate.update(req.body, { where: { id: chocolateId } })
         return res.json({ message: "Chocolate Updated" })
 
@@ -109,7 +109,7 @@ exports.unAllowedChocolate = async (req, res, next) => {
             return res.json(404).json({ message: "chocolate does'nt exist"})
         }
        
-        req.body.updateChocolate.allowed = false
+        req.body.allowed = false
         await Chocolate.update(req.body, { where: { id: chocolateId } })
         return res.json({ message: "Chocolate Updated" })
 
