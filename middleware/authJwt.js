@@ -23,11 +23,16 @@ verifyToken = (req, res, next) => {
         user_Id: decoded.id,
         roles: []
       }
+      console.log("1")
       const user = await User.findByPk(req.auth.user_Id)
-      const roles = await user.getRoles()       
+      console.log("2")
+      const roles = await user.getRoles()     
+      console.log("3")  
       await roles.map((role) => {
+        console.log("5")
         req.auth.roles.push(role.name)
       })
+      console.log("6")
       next()
     })
 }
