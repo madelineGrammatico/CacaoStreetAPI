@@ -2,7 +2,10 @@ const DB = require("../db.config")
 const Rating = DB.Rating
 const Chocolate = DB.Chocolate
 const { CommentError, RequestError } = require('../errors/customError')
+const chocolateCtrl = require('../controllers/chocolate')
 // const { Sequelize, Op } = require('sequelize');
+
+
 const calculateAverage = async (chocolate_Id) => {
     const ratings = await Rating.findAll({
         include: [{
@@ -66,7 +69,8 @@ exports.addRating = async ( req, res, next,) => {
         const user_Id = req.auth.user_Id
         const chocolate_Id= parseInt(req.body.chocolate_Id)
         const rate = parseInt(req.body.rate)
-       
+        const comment_Id = parseInt(req.body.comment_Id)
+        
         if( !rate || !user_Id) {
             throw new RequestError("Missing Data")
         }
@@ -78,7 +82,8 @@ exports.addRating = async ( req, res, next,) => {
         const ratingWithUser = {
             rate, 
             user_Id: user_Id,
-            chocolate_Id
+            chocolate_Id, 
+            comment_Id: comment_Id
         }
         const rating = await Rating.create(ratingWithUser)
         rating.addChocolate(chocolate)
@@ -88,8 +93,7 @@ exports.addRating = async ( req, res, next,) => {
             averageRating: averageRating,
             chocolate_Id: chocolate_Id
         }
-
-        next()
+        chocolateCtrl.updateChocolate(req, res, next)
     } catch(err) { next(err) }
 }
 
@@ -108,7 +112,7 @@ exports.updateRating = async (req, res, next) => {
             throw new CommentError("This comment does not exist !")
         }
 
-        if (rating.user_Id !== user_Id) {
+        if (rating.user_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
 
@@ -135,7 +139,7 @@ exports.deleteRating = async (req, res, next) => {
         }
 
         const rating = await Rating.findOne({ where: {id: ratingId}, raw: true})
-        if (rating.user_Id !== user_Id) {
+        if (rating.user_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
             return res.json(404).json({ message: "You don't have the right for this"})
         }
         const chocolate_Id = rating.chocolate_Id

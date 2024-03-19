@@ -13,7 +13,7 @@ verifyToken = (req, res, next) => {
   jwt.verify(
     token,
     process.env.JWT_SECRET,
-    (err, decoded) => {
+    async(err, decoded) => {
       if (err) {
         return res.status(401).send({
             message: "Unauthorized!",
@@ -21,15 +21,19 @@ verifyToken = (req, res, next) => {
       }
       req.auth = {
         user_Id: decoded.id,
-        roles: decoded.roles
+        roles: []
       }
+      const user = await User.findByPk(req.auth.user_Id)
+      const roles = await user.getRoles()       
+      await roles.map((role) => {
+        req.auth.roles.push(role.name)
+      })
       next()
-    }
-  )
+    })
 }
 
 isAdmin = (req, res, next) => {
-  User.findByPk(req.user_Id).then(user => {
+  User.findByPk(req.auth.user_Id).then(user => {
     user.getRoles().then(roles => {
       for (let i = 0; i < roles.length; i++) {
         if (roles[i].name === "admin") {
