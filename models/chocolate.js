@@ -32,9 +32,14 @@ module.exports =(sequelize) => {
             allowNull: false
         },
         hours: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.JSON,
+            allowNull: false,
+            default: []
         },
+        allowed: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
+        }
     })
 
 }

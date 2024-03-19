@@ -78,6 +78,44 @@ exports.updateChocolate = async ( req, res, next) => {
     } catch(err) { next(err) }
 }
 
+exports.allowedChocolate = async (req, res, next) => {
+    try {
+        const chocolateId = req.body.chocolate_Id
+        if(!chocolateId) {
+            return res.json(400).json({ message: "Missing Parameter"})
+        }
+
+        const chocolate = await Chocolate.findOne({ where: {id: chocolateId}, raw: true})
+        if(chocolate === null) {
+            return res.json(404).json({ message: "chocolate does'nt exist"})
+        }
+       
+        req.body.updateChocolate.allowed = true
+        await Chocolate.update(req.body, { where: { id: chocolateId } })
+        return res.json({ message: "Chocolate Updated" })
+
+    } catch(err) { next(err) }
+}
+
+exports.unAllowedChocolate = async (req, res, next) => {
+    try {
+        const chocolateId = req.body.chocolate_Id
+        if(!chocolateId) {
+            return res.json(400).json({ message: "Missing Parameter"})
+        }
+
+        const chocolate = await Chocolate.findOne({ where: {id: chocolateId}, raw: true})
+        if(chocolate === null) {
+            return res.json(404).json({ message: "chocolate does'nt exist"})
+        }
+       
+        req.body.updateChocolate.allowed = false
+        await Chocolate.update(req.body, { where: { id: chocolateId } })
+        return res.json({ message: "Chocolate Updated" })
+
+    } catch(err) { next(err) }
+}
+
 exports.deleteChocolate = async ( req, res, next) => {
     try {
         const user_Id = req.auth.user_Id
@@ -90,12 +128,13 @@ exports.deleteChocolate = async ( req, res, next) => {
         if(chocolate === null) {
             return res.json(404).json({ message: "chocolate does'nt exist"})
         }
-        if (chocolate.user_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
-            return res.json(404).json({ message: "You don't have the right for this"})
+        const isAdmin = req.auth.roles.some((role)=> {
+            return role === "admin"})
+        if (isAdmin || chocolate.user_Id === user_Id ) {
+            await Chocolate.destroy({ where: {id: chocolateId}, force: true})
+            return res.status(204).json({ message: "chocolate delete"})
         }
-
-        await Chocolate.destroy({ where: {id: chocolateId}, force: true})
-        return res.status(204).json({ message: "chocolate delete"})
+        return res.json(404).json({ message: "You don't have the right for this"})
 
     } catch(err) { next(err) }
 }

@@ -10,6 +10,7 @@ const {UserError, AuthentificationError} = require('../errors/customError')
 exports.loginUser = async (req, res, next) => {
     
     try {
+        console.log("7")
         const {email, password} = req.body
         if(!email || !password) {
             // return res.status(400).json({ message: "Bad email or password" })
@@ -33,7 +34,7 @@ exports.loginUser = async (req, res, next) => {
             username: user.username,
             email: user.email
         }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_DURING })
-
+        console.log("8")
        return res.json({access_token: token})
     } catch (err) {
         next(err)

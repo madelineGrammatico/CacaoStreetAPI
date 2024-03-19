@@ -14,6 +14,10 @@ router.post('', [authJwt.verifyToken], chocolateCtrl.addChocolate)
 
 router.patch("/:id", [authJwt.verifyToken], chocolateCtrl.updateChocolate)
 
+router.patch("/allowed/:id", [authJwt.verifyToken, authJwt.isAdmin], chocolateCtrl.allowedChocolate)
+
+router.patch("/unallowed/:id", [authJwt.verifyToken, authJwt.isAdmin], chocolateCtrl.unAllowedChocolate)
+
 router.delete("/:id", [authJwt.verifyToken], chocolateCtrl.deleteChocolate)
 
 module.exports = router
