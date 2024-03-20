@@ -17,7 +17,7 @@ exports.getChocolate = async (req, res, next) => {
 
         const chocolate = await Chocolate.findOne({ 
             where: { id: chocolateId },
-            include: { model: DB.User, as: "User", attributes: ["id", "pseudo", "email"]}
+            include: { model: DB.User, as: "User", attributes: ["id", "name", "email"]}
         })
         if((chocolate === null)) {
             throw new ChocolateError("This user does not exist !", 0)
@@ -130,10 +130,14 @@ exports.deleteChocolate = async ( req, res, next) => {
         }
         const isAdmin = req.auth.roles.some((role)=> {
             return role === "admin"})
+        console.log(isAdmin)
+        console.log(isAdmin || chocolate.user_Id === user_Id )
         if (isAdmin || chocolate.user_Id === user_Id ) {
+            console.log("authorization")
             await Chocolate.destroy({ where: {id: chocolateId}, force: true})
             return res.status(204).json({ message: "chocolate delete"})
         }
+        console.log("pas d'autorisation")
         return res.json(404).json({ message: "You don't have the right for this"})
 
     } catch(err) { next(err) }

@@ -26,7 +26,7 @@ exports.getReporting = async (req, res, next) => {
             {
                 model: DB.User, 
                 as: "User", 
-                attributes: ["id","pseudo", "email"]
+                attributes: ["id","name", "email"]
             }
          ]
         })

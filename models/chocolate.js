@@ -33,7 +33,7 @@ module.exports =(sequelize) => {
         },
         hours: {
             type: DataTypes.JSON,
-            allowNull: false,
+            allowNull: true,
             default: []
         },
         allowed: {

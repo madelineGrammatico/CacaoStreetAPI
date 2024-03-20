@@ -35,7 +35,7 @@ module.exports = (sequelize, Sequelize) => {
 //             primaryKey: true,
 //             autoIncrement: true
 //         },
-//         pseudo: {
+//         name: {
 //             type: DataTypes.STRING(50),
 //             unique: true,
 //             allowNull: false
