@@ -112,19 +112,19 @@ exports.updateRating = async (req, res, next) => {
             throw new CommentError("This comment does not exist !")
         }
 
-        if (rating.user_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
-            return res.json(404).json({ message: "You don't have the right for this"})
-        }
-
-        await Rating.update(req.body, { where: { id: ratingId } })
+        const isAdmin = req.auth.roles.some((role)=> {
+            return role === "admin"})
+        if (isAdmin || rating.id === user_Id ) {
+            await Rating.update(req.body, { where: { id: ratingId } })
         
-        const averageRating = await calculateAverage(rating.chocolate_Id)
-        req.body = {
-            averageRating: averageRating,
-            chocolate_Id: rating.chocolate_Id
+            const averageRating = await calculateAverage(rating.chocolate_Id)
+            req.body = {
+                averageRating: averageRating,
+                chocolate_Id: rating.chocolate_Id
+            }
+            next()
         }
-
-        next()
+        return res.json(409).json({ message: "You don't have the right for this"})
 
     } catch(err) { next(err) }
 }
@@ -139,19 +139,22 @@ exports.deleteRating = async (req, res, next) => {
         }
 
         const rating = await Rating.findOne({ where: {id: ratingId}, raw: true})
-        if (rating.user_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
-            return res.json(404).json({ message: "You don't have the right for this"})
-        }
-        const chocolate_Id = rating.chocolate_Id
 
-        await Rating.destroy({ where: {id: ratingId}, force: true})
-        
-        const averageRating = await calculateAverage(chocolate_Id)
-        req.body = {
-            averageRating: averageRating,
-            chocolate_Id: chocolate_Id
-        }
+        const isAdmin = req.auth.roles.some((role)=> {
+            return role === "admin"})
+        if (isAdmin || rating.id === user_Id ) {
+            const chocolate_Id = rating.chocolate_Id
+            await Rating.destroy({ where: {id: ratingId}, force: true})
+            
+            const averageRating = await calculateAverage(chocolate_Id)
+            req.body = {
+                averageRating: averageRating,
+                chocolate_Id: chocolate_Id
+            }
 
-        next()
+            next()
+        }
+        return res.json(409).json({ message: "You don't have the right for this"})
+
     } catch(err) { next(err)}
 }
