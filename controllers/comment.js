@@ -94,7 +94,7 @@ exports.updateComment = async (req, res, next) => {
 
         const isAdmin = req.auth.roles.some((role)=> {
             return role === "admin"})
-        if (isAdmin || chocolate.user_Id === user_Id ) {
+        if (isAdmin || comment.id === user_Id ) {
             await Comment.update(req.body, { where: { id: commentId } })
             if(req.body.rate) {
                 const rating = DB.Rating.findOne({where: {comment_Id: commentId}})
@@ -119,10 +119,11 @@ exports.deleteComment = async (req, res, next) => {
             // return res.json(400).json({ message: "Missing Parameter"})
             throw new RequestError("Missing Data")
         }
-
+        
+        const comment = await Comment.findOne({ where: {id: commentId}})
         const isAdmin = req.auth.roles.some((role)=> {
             return role === "admin"})
-        if (isAdmin || chocolate.user_Id === user_Id ) {
+        if (isAdmin || comment.id === user_Id  === user_Id ) {
             await Comment.destroy({ where: {id: commentId}, force: true})
             return res.status(204).json({})
         }
