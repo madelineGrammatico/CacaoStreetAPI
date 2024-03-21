@@ -50,13 +50,13 @@ module.exports = function(app) {
     
   app.patch(
     "/api/users/untrash/:id",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken, authJwt.isAdmin],
     userCtrl.untrashUser
   )
 
   app.delete(
     "/api/users/trash/:id",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken, authJwt.isAdmin],
     userCtrl.trashUser
   )
 

@@ -72,16 +72,18 @@ exports.updateUser = async (req, res, next) => {
             // return res.status(404).json({ message: "This user does not exist !"})
             throw new UserError("This user does not exist !",0)
         }
-        if (user.id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
-            return res.json(404).json({ message: "You don't have the right for this"})
+        
+        const isAdmin = req.auth.roles.some((role)=> {
+            return role === "admin"})
+        if (isAdmin || user.id === user_Id ) {
+            if(req.body.password) {
+                const hash = await bcrypt.hash(req.body.password, parseInt(process.env.BCRYPT_SALT_ROUND))
+                req.body.password = hash
+            }
+            await User.update(req.body, { where: { id: userId } })
+            return res.json({ message: "User Updated" })
         }
-
-        if(req.body.password) {
-            const hash = await bcrypt.hash(req.body.password, parseInt(process.env.BCRYPT_SALT_ROUND))
-            req.body.password = hash
-        }
-        await User.update(req.body, { where: { id: userId } })
-        return res.json({ message: "User Updated" })
+        return res.json(404).json({ message: "You don't have the right for this"})
 
     } catch(err) {
         // res.status(err.statusCode || 500).json({ message: err.message, error: err})
@@ -91,16 +93,10 @@ exports.updateUser = async (req, res, next) => {
 
 exports.untrashUser = async ( req, res, next) => {
     try {
-        // const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
             throw new RequestError("Missing parameter")
         }
-
-        // const user = await User.findOne({ where: {id: userId}, raw: true})
-        // if (user.id !== user_Id) {
-        //     return res.json(404).json({ message: "You don't have the right for this"})
-        // }
 
         await User.restore({ where : {id: userId}})
         return res.status(204).json({})
@@ -118,12 +114,14 @@ exports.trashUser = async (req, res, next) => {
         }
 
         const user = await User.findOne({ where: {id: userId}, raw: true})
-        if (user.id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
-            return res.json(404).json({ message: "You don't have the right for this"})
-        }
         
-        await User.destroy({ where: {id: userId}})
-        return  res.status(204).json({})
+        const isAdmin = req.auth.roles.some((role)=> {
+            return role === "admin"})
+        if (isAdmin || user.id === user_Id ) {
+            await User.destroy({ where: {id: userId}})
+            return  res.status(204).json({})
+        }
+        return res.json(404).json({ message: "You don't have the right for this"})
     } catch(err) {
         next(err)
     }
@@ -138,12 +136,13 @@ exports.deleteUser = async (req, res, next) => {
         }
         
         const user = await User.findOne({ where: {id: userId}, raw: true})
-        if (user.id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
-            return res.json(404).json({ message: "You don't have the right for this"})
+        
+        const isAdmin = req.auth.roles.some((role)=> { return role === "admin" })
+        if (isAdmin || user.id === user_Id ) {
+            await User.destroy({ where: {id: userId}, force: true})
+            return res.status(204).json({})
         }
-
-        await User.destroy({ where: {id: userId}, force: true})
-        return res.status(204).json({})
-
+        return res.json(404).json({ message: "You don't have the right for this"})
+        
     } catch(err) { next(err) }
 }
