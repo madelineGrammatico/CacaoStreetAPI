@@ -21,12 +21,12 @@ exports.getReporting = async (req, res, next) => {
             { 
                 model: DB.Chocolate, 
                 as: "Chocolate", 
-                attributes: ["id","name", "addressShop", "position", "rate", "price", "hours"]
+                attributes: ["id", "name", "addressShop", "position", "price", "hours"]
             },
             {
                 model: DB.User, 
                 as: "User", 
-                attributes: ["id","name", "email"]
+                attributes: ["id","username", "email"]
             }
          ]
         })
