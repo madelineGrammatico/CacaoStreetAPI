@@ -48,11 +48,6 @@ exports.addReporting = async ( req, res, next,) => {
         if(!body || !chocolate_Id || !user_Id) {
             throw new RequestError("Missing Data")
         }
-
-        // const chocolate = await DB.Chocolate.findOne({ where: { id: chocolate_Id }, raw: true })
-        // if(chocolate === null) {
-        //     throw new CommentError(`the chocolate of the comment don't exists`)
-        // }
         
         const reportingWithUser = {
             body, chocolate_Id, 

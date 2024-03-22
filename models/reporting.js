@@ -1,5 +1,4 @@
 const { DataTypes } = require('sequelize')
-// const DB = require("../db.config")
 module.exports = (sequelize) => {
     const Reporting = sequelize.define("Reporting", {
         id: {

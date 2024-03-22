@@ -3,8 +3,6 @@ const Rating = DB.Rating
 const Chocolate = DB.Chocolate
 const { CommentError, RequestError } = require('../errors/customError')
 const chocolateCtrl = require('../controllers/chocolate')
-// const { Sequelize, Op } = require('sequelize');
-
 
 const calculateAverage = async (chocolate_Id) => {
     const ratings = await Rating.findAll({
