@@ -33,16 +33,7 @@ db.role.belongsToMany(db.User, {
   });
 db.User.belongsToMany(db.role, {
     through: "user_roles"
-});
-// db.Chocolate.belongsToMany(db.Rating, { through: db.Chocolate_Rating})
-// db.Rating.belongsToMany(Chocolate, { through: db.Chocolate_Rating})
-
-// db.Rating.belongsToMany(db.Chocolate, {
-//     through: "chocolate_rating"
-//   });
-// db.Chocolate.belongsToMany(db.Rating, {
-//     through: "chocolate_rating"
-// });
+})
 
 db.User.hasMany(db.Chocolate, {
     foreignKey: "user_Id",
@@ -100,24 +91,6 @@ db.Rating.belongsTo(db.Comment, {
     foreignKey: "comment_Id",
     as: "Rating"
 })
-// db.Chocolate.hasMany(db.Rating, {
-//     foreignKey: "chocolate_Id",
-//     as: "Rating",
-//     onDelelte: "cascade"
-// })
-// db.Rating.belongsTo(db.Chocolate,{
-//     foreignKey: "chocolate_Id",
-//     as:"Chocolate"
-// })
-// db.User.hasMany(db.Rating, {
-//     foreignKey: "user_Id",
-//     as: "Rating",
-//     onDelelte: "cascade"
-// })
-// db.Rating.belongsTo(db.User,{
-//     foreignKey: "user_Id",
-//     as:"User"
-// })
 
 
 //delete for production

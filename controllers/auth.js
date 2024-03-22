@@ -38,10 +38,6 @@ exports.loginUser = async (req, res, next) => {
        return res.json({access_token: token})
     } catch (err) {
         next(err)
-        // if (err.name ==='SequelizeDataBaseError') {
-        //     res.status(500).json({ message: "DataBase Error", error: err })
-        // }
-        // res.status(err.statusCode || 500).json({ message: err.message, error: err})
     }
 }
 

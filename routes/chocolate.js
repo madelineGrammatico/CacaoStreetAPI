@@ -1,7 +1,6 @@
 const express = require('express')
 
 const chocolateCtrl = require('../controllers/chocolate')
-// const checkTokenMiddleware = require('../jsonwebtoken/checkUser')
 const { authJwt } = require("../middleware");
 
 const router = express.Router()

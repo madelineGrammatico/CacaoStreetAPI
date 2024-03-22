@@ -21,12 +21,12 @@ exports.getReporting = async (req, res, next) => {
             { 
                 model: DB.Chocolate, 
                 as: "Chocolate", 
-                attributes: ["id","name", "addressShop", "position", "rate", "price", "hours"]
+                attributes: ["id", "name", "addressShop", "position", "price", "hours"]
             },
             {
                 model: DB.User, 
                 as: "User", 
-                attributes: ["id","pseudo", "email"]
+                attributes: ["id","username", "email"]
             }
          ]
         })
@@ -48,11 +48,6 @@ exports.addReporting = async ( req, res, next,) => {
         if(!body || !chocolate_Id || !user_Id) {
             throw new RequestError("Missing Data")
         }
-
-        // const chocolate = await DB.Chocolate.findOne({ where: { id: chocolate_Id }, raw: true })
-        // if(chocolate === null) {
-        //     throw new CommentError(`the chocolate of the comment don't exists`)
-        // }
         
         const reportingWithUser = {
             body, chocolate_Id, 
@@ -80,31 +75,37 @@ exports.updateReporting = async (req, res, next) => {
         }
 
         if (reporting.user_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
-            return res.json(404).json({ message: "You don't have the right for this"})
+            
         }
-
-        await Reporting.update(req.body, { where: { id: reportingId } })
-        return res.json({ message: "Reporting Updated" })
-
+        const isAdmin = req.auth.roles.some((role)=> {
+            return role === "admin"})
+        if (isAdmin || reporting.id === user_Id ) {
+            await Reporting.update(req.body, { where: { id: reportingId } })
+            return res.json({ message: "Reporting Updated" })    
+        }
+        return res.json(404).json({ message: "You don't have the right for this"})
+        
     } catch(err) { next(err) }
 }
 
 exports.deleteReporting = async (req, res, next) => {
     try {
         const user_Id = req.auth.user_Id
-        let reportingId = parseInt(req.params.id)
+        const reportingId = parseInt(req.params.id)
         if(!reportingId) {
             // return res.json(400).json({ message: "Missing Parameter"})
             throw new RequestError("Missing Data")
         }
 
         const reporting = await Reporting.findOne({ where: {id: reportingId}, raw: true})
-        if (reporting.user_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
-            return res.json(404).json({ message: "You don't have the right for this"})
+      
+        const isAdmin = req.auth.roles.some((role)=> {
+            return role === "admin"})
+        if (isAdmin || reporting.id === user_Id ) {
+            await Reporting.destroy({ where: {id: reportingId}, force: true})
+            return res.status(204).json({})
         }
-
-        await Reporting.destroy({ where: {id: reportingId}, force: true})
-        return res.status(204).json({})
+        return res.json(404).json({ message: "You don't have the right for this"})
 
     } catch(err) { next(err) }
 }

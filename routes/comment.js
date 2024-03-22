@@ -3,7 +3,6 @@ const { authJwt } = require("../middleware");
 const commentCtrl = require('../controllers/comment')
 const ratingCtrl = require('../controllers/rating')
 const chocolateCtrl = require('../controllers/chocolate')
-// const checkTokenMiddleware = require('../jsonwebtoken/checkUser')
 
 const router = express.Router()
 

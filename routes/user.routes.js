@@ -1,5 +1,4 @@
 const { authJwt } = require("../middleware")
-// const controller = require("../controllers/user.controller");
 const userCtrl = require('../controllers/user')
 
 module.exports = function(app) {
@@ -10,20 +9,6 @@ module.exports = function(app) {
     )
     next()
   })
-
-  // app.get("/api/all", controller.allAccess)
-
-  // app.get(
-  //   "/api/user",
-  //   [authJwt.verifyToken],
-  //   controller.userBoard
-  // )
-
-  // app.get(
-  //   "/api/admin",
-  //   [authJwt.verifyToken, authJwt.isAdmin],
-  //   controller.adminBoard
-  // )
 
   app.get(
     '/api/admin/users',
@@ -37,11 +22,6 @@ module.exports = function(app) {
     userCtrl.getUser
   )
 
-  // router.post(
-  //  '', 
-  //  userCtrl.addUser
-  // )
-
   app.patch(
     "/api/users/:id",
     [authJwt.verifyToken],
@@ -50,13 +30,13 @@ module.exports = function(app) {
     
   app.patch(
     "/api/users/untrash/:id",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken, authJwt.isAdmin],
     userCtrl.untrashUser
   )
 
   app.delete(
     "/api/users/trash/:id",
-    [authJwt.verifyToken],
+    [authJwt.verifyToken, authJwt.isAdmin],
     userCtrl.trashUser
   )
 

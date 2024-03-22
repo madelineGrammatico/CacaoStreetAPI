@@ -27,7 +27,7 @@ exports.getComment = async (req, res, next) => {
             {
                 model: DB.User, 
                 as: "User", 
-                attributes: ["id","pseudo", "email"]
+                attributes: ["id","name", "email"]
             }
          ]
         })
@@ -92,20 +92,21 @@ exports.updateComment = async (req, res, next) => {
             throw new CommentError("This comment does not exist !")
         }
 
-        if (comment.user_comment_Id !== user_Id ||  !req.auth.roles.some((role)=> {return role === "admin"})) {
-            return res.json(404).json({ message: "You don't have the right for this"})
-        }
-        
-        await Comment.update(req.body, { where: { id: commentId } })
-        if(req.body.rate) {
-            const rating = DB.Rating.findOne({where: {comment_Id: commentId}})
-            if(rating) {
-                ratingCtrl.updateRating(req, res, next)
-            } else {
-                ratingCtrl.addRating(req, res, next)
+        const isAdmin = req.auth.roles.some((role)=> {
+            return role === "admin"})
+        if (isAdmin || comment.id === user_Id ) {
+            await Comment.update(req.body, { where: { id: commentId } })
+            if(req.body.rate) {
+                const rating = DB.Rating.findOne({where: {comment_Id: commentId}})
+                if(rating) {
+                    ratingCtrl.updateRating(req, res, next)
+                } else {
+                    ratingCtrl.addRating(req, res, next)
+                }
             }
+            return res.json({ message: "Comment Updated" })
         }
-        return res.json({ message: "Comment Updated" })
+        return res.json(404).json({ message: "You don't have the right for this"})
 
     } catch(err) { next(err) }
 }
@@ -119,13 +120,14 @@ exports.deleteComment = async (req, res, next) => {
             throw new RequestError("Missing Data")
         }
 
-        const comment = await Comment.findOne({ where: {id: commentId}, raw: true})
-        if (comment.user_comment_Id !== user_Id || !req.auth.roles.some((role)=> {return role === "admin"})) {
-            return res.json(404).json({ message: "You don't have the right for this"})
+        const comment = await Comment.findOne({ where: {id: commentId}})
+        const isAdmin = req.auth.roles.some((role)=> {
+            return role === "admin"})
+        if (isAdmin || comment.id === user_Id) {
+            await Comment.destroy({ where: {id: commentId}, force: true})
+            return res.status(204).json({})
         }
-
-        await Comment.destroy({ where: {id: commentId}, force: true})
-        return res.status(204).json({})
+        return res.json(404).json({ message: "You don't have the right for this"})
 
     } catch(err) { next(err) }
 }
