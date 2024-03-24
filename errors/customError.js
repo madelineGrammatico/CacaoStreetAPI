@@ -23,10 +23,10 @@ class MainError extends Error {
                 }
             break
             case "ChocolateError":
-                if(errorType === 0) {
-                    this.statusCode = 404
-                } else {
+                if(errorType === 1) {
                     this.statusCode = 409
+                } else {
+                    this.statusCode = 404
                 }
             break
             case "CommentError":
