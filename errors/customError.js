@@ -35,6 +35,9 @@ class MainError extends Error {
             case "RatingError":
                 this.statusCode = 404
             break
+            case "ReportingError":
+                this.statusCode = 404
+            break
             case "RequestError":
                 this.statusCode = 400
             break
@@ -50,6 +53,7 @@ class RequestError extends MainError{}
 class ChocolateError extends MainError{}
 class CommentError extends MainError{}
 class RatingError extends MainError{}
+class ReportingError extends MainError{}
 
 module.exports = { 
     MainError, 
@@ -58,5 +62,6 @@ module.exports = {
     ChocolateError, 
     CommentError, 
     RequestError, 
-    RatingError
+    RatingError,
+    ReportingError
 }
