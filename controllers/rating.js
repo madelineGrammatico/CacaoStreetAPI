@@ -1,7 +1,13 @@
 const DB = require("../db.config")
 const Rating = DB.Rating
 const Chocolate = DB.Chocolate
-const { CommentError, RequestError } = require('../errors/customError')
+const { 
+    CommentError, 
+    RequestError, 
+    UserError, 
+    ChocolateError, 
+    RatingError 
+} = require('../errors/customError')
 const chocolateCtrl = require('../controllers/chocolate')
 
 const calculateAverage = async (chocolate_Id) => {
@@ -25,6 +31,7 @@ const calculateAverage = async (chocolate_Id) => {
     console.log(averageRating)
     return averageRating
 }
+
 exports.getAllRatings = (req, res) => {
     Rating.findAll()
         .then( ratings => res.json({data: ratings}))
@@ -54,7 +61,7 @@ exports.getRating = async (req, res, next) => {
          ]
         })
         if((rating === null)) {
-            throw new CommentError("This comment does not exist !", 0)
+            throw new RatingError("This rating does not exist !")
         }
 
         return res.json({data: rating})
@@ -74,7 +81,7 @@ exports.addRating = async ( req, res, next,) => {
         }
         const chocolate = await Chocolate.findByPk(chocolate_Id)
         if(chocolate === null) {
-            throw new CommentError(`the chocolate of the comment don't exists`)
+            throw new ChocolateError(`the chocolate of the comment don't exists`)
         }
         
         const ratingWithUser = {
@@ -100,13 +107,11 @@ exports.updateRating = async (req, res, next) => {
         const user_Id = req.auth.user_Id
         const ratingId = parseInt(req.params.id)
         if(!ratingId) {
-            // return res.json(400).json({ message: "Missing Parameter"})
             throw new RequestError("Missing Data")
         }
 
         const rating = await Rating.findOne({ where: {id: ratingId}, raw: true})
         if(rating === null) {
-            // return res.json(404).json({ message: "comment does'nt exist"})
             throw new CommentError("This comment does not exist !")
         }
 
@@ -122,7 +127,7 @@ exports.updateRating = async (req, res, next) => {
             }
             next()
         }
-        return res.json(409).json({ message: "You don't have the right for this"})
+        throw new UserError("You don't have the right for this")
 
     } catch(err) { next(err) }
 }
@@ -132,7 +137,6 @@ exports.deleteRating = async (req, res, next) => {
         const user_Id = req.auth.user_Id
         let ratingId = parseInt(req.params.id)
         if(!ratingId) {
-            // return res.json(400).json({ message: "Missing Parameter"})
             throw new RequestError("Missing Data")
         }
 
@@ -152,7 +156,7 @@ exports.deleteRating = async (req, res, next) => {
 
             next()
         }
-        return res.json(409).json({ message: "You don't have the right for this"})
+        throw new UserError("You don't have the right for this")
 
     } catch(err) { next(err)}
 }
