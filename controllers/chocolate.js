@@ -1,6 +1,6 @@
 const DB = require("../db.config")
 const Chocolate = DB.Chocolate
-const { ChocolateError, RequestError } = require('../errors/customError')
+const { ChocolateError, RequestError, UserError } = require('../errors/customError')
 
 exports.getAllChocolates = (req, res) => {
     Chocolate.findAll()
@@ -17,10 +17,10 @@ exports.getChocolate = async (req, res, next) => {
 
         const chocolate = await Chocolate.findOne({ 
             where: { id: chocolateId },
-            include: { model: DB.User, as: "User", attributes: ["id", "name", "email"]}
+            include: { model: DB.User, as: "User", attributes: ["id", "username", "email"]}
         })
         if((chocolate === null)) {
-            throw new ChocolateError("This user does not exist !", 0)
+            throw new ChocolateError("This chocolate does not exist !")
         }
         // const user = await DB.User.findOne({ where: {id: user_Id}, raw: true})
         return res.json({data: chocolate})
@@ -56,25 +56,24 @@ exports.updateChocolate = async ( req, res, next) => {
         const user_Id = req.auth.user_Id
         const chocolateId = parseInt(req.params.id) || req.body.chocolate_Id
         if(!chocolateId) {
-            return res.json(400).json({ message: "Missing Parameter"})
+            throw new RequestError("Missing Parameter")
         }
 
         const chocolate = await Chocolate.findOne({ where: {id: chocolateId}, raw: true})
         if(chocolate === null) {
-            return res.json(404).json({ message: "chocolate does'nt exist"})
+            throw new ChocolateError("chocolate does'nt exist")
         }
         const isAdmin = req.auth.roles.some((role)=> {
             return role === "admin"})
         if (isAdmin || chocolate.user_Id === user_Id ) {
-            
             const updateChocolate = {...req.body}
+            
             !isAdmin ? updateChocolate.allowed = false : null
             await Chocolate.update(req.body, { where: { id: chocolateId } })
             return res.json({ message: "Chocolate Updated" })
         }
-        return res.json(409).json({ message: "You don't have the right for this"})
+        throw new UserError("You don't have the right for this")
         
-
     } catch(err) { next(err) }
 }
 
@@ -82,15 +81,14 @@ exports.allowedChocolate = async (req, res, next) => {
     try {
         const chocolateId = req.body.chocolate_Id
         if(!chocolateId) {
-            return res.json(400).json({ message: "Missing Parameter"})
+            throw new RequestError("Missing Parameter")
         }
         const chocolate = await Chocolate.findOne({ where: {id: chocolateId}, raw: true})
         if(chocolate === null) {
-            return res.json(404).json({ message: "chocolate does'nt exist"})
+            throw new ChocolateError("chocolate does'nt exist")
         }
-        req.body.allowed = true
 
-        console.log(req.body.allowed)
+        req.body.allowed = true
         await Chocolate.update(req.body, { where: { id: chocolateId } })
         return res.json({ message: "Chocolate Updated" })
 
@@ -101,12 +99,12 @@ exports.unAllowedChocolate = async (req, res, next) => {
     try {
         const chocolateId = req.body.chocolate_Id
         if(!chocolateId) {
-            return res.json(400).json({ message: "Missing Parameter"})
+            throw new RequestError("Missing Parameter")
         }
 
         const chocolate = await Chocolate.findOne({ where: {id: chocolateId}, raw: true})
         if(chocolate === null) {
-            return res.json(404).json({ message: "chocolate does'nt exist"})
+            throw new ChocolateError("chocolate does'nt exist")
         }
        
         req.body.allowed = false
@@ -121,24 +119,20 @@ exports.deleteChocolate = async ( req, res, next) => {
         const user_Id = req.auth.user_Id
         let chocolateId = parseInt(req.params.id)
         if(!chocolateId) {
-            return res.json(400).json({ message: "Missing Parameter"})
+            throw new RequestError("Missing Parameter")
         }
 
         const chocolate = await Chocolate.findOne({ where: {id: chocolateId}, raw: true})
         if(chocolate === null) {
-            return res.json(404).json({ message: "chocolate does'nt exist"})
+            throw new ChocolateError("chocolate does'nt exist")
         }
         const isAdmin = req.auth.roles.some((role)=> {
             return role === "admin"})
-        console.log(isAdmin)
-        console.log(isAdmin || chocolate.user_Id === user_Id )
         if (isAdmin || chocolate.user_Id === user_Id ) {
-            console.log("authorization")
             await Chocolate.destroy({ where: {id: chocolateId}, force: true})
             return res.status(204).json({ message: "chocolate delete"})
         }
-        console.log("pas d'autorisation")
-        return res.json(404).json({ message: "You don't have the right for this"})
+        throw new UserError("You don't have the right for this")
 
     } catch(err) { next(err) }
 }

@@ -16,21 +16,27 @@ class MainError extends Error {
                 }
             break
             case "UserError":
-                if(errorType === 0) {
-                    this.statusCode = 404
-                } else {
+                if(errorType === 1) {
                     this.statusCode = 409
+                } else {
+                    this.statusCode = 404
                 }
             break
             case "ChocolateError":
-                if(errorType === 0) {
-                    this.statusCode = 404
-                } else {
+                if(errorType === 1) {
                     this.statusCode = 409
+                } else {
+                    this.statusCode = 404
                 }
             break
             case "CommentError":
-                    this.statusCode = 404
+                this.statusCode = 404
+            break
+            case "RatingError":
+                this.statusCode = 404
+            break
+            case "ReportingError":
+                this.statusCode = 404
             break
             case "RequestError":
                 this.statusCode = 400
@@ -46,5 +52,16 @@ class UserError extends MainError{}
 class RequestError extends MainError{}
 class ChocolateError extends MainError{}
 class CommentError extends MainError{}
+class RatingError extends MainError{}
+class ReportingError extends MainError{}
 
-module.exports = { MainError, AuthentificationError, UserError,ChocolateError, CommentError, RequestError}
+module.exports = { 
+    MainError, 
+    AuthentificationError, 
+    UserError,
+    ChocolateError, 
+    CommentError, 
+    RequestError, 
+    RatingError,
+    ReportingError
+}

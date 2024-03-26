@@ -1,6 +1,6 @@
 const DB = require("../db.config")
 const Comment = DB.Comment
-const { CommentError, RequestError } = require('../errors/customError')
+const { CommentError, RequestError, UserError } = require('../errors/customError')
 const ratingCtrl = require('../controllers/rating')
 
 exports.getAllComments = (req, res) => {
@@ -32,7 +32,7 @@ exports.getComment = async (req, res, next) => {
          ]
         })
         if((comment === null)) {
-            throw new CommentError("This comment does not exist !", 0)
+            throw new CommentError("This comment does not exist !")
         }
 
         return res.json({data: comment})
@@ -68,7 +68,6 @@ exports.addComment = async ( req, res, next,) => {
                 chocolate_Id: chocolate_Id, 
                 comment_Id: comment.id
             }
-            // next(req, res, next)
             ratingCtrl.addRating(req, res, next)
         } 
             return res.json({ message: "Comment Created", data: comment })
@@ -82,13 +81,11 @@ exports.updateComment = async (req, res, next) => {
         const user_Id = req.auth.user_Id
         const commentId = parseInt(req.params.id)
         if(!commentId) {
-            // return res.json(400).json({ message: "Missing Parameter"})
             throw new RequestError("Missing Data")
         }
 
         const comment = await Comment.findOne({ where: {id: commentId}, raw: true})
         if(comment === null) {
-            // return res.json(404).json({ message: "comment does'nt exist"})
             throw new CommentError("This comment does not exist !")
         }
 
@@ -106,7 +103,7 @@ exports.updateComment = async (req, res, next) => {
             }
             return res.json({ message: "Comment Updated" })
         }
-        return res.json(404).json({ message: "You don't have the right for this"})
+        throw new UserError("You don't have the right for this")
 
     } catch(err) { next(err) }
 }
@@ -116,7 +113,6 @@ exports.deleteComment = async (req, res, next) => {
         const user_Id = req.auth.user_Id
         let commentId = parseInt(req.params.id)
         if(!commentId) {
-            // return res.json(400).json({ message: "Missing Parameter"})
             throw new RequestError("Missing Data")
         }
 
@@ -127,7 +123,7 @@ exports.deleteComment = async (req, res, next) => {
             await Comment.destroy({ where: {id: commentId}, force: true})
             return res.status(204).json({})
         }
-        return res.json(404).json({ message: "You don't have the right for this"})
+        throw new UserError("You don't have the right for this")
 
     } catch(err) { next(err) }
 }

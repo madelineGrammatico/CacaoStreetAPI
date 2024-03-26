@@ -1,4 +1,3 @@
-
 const {UserError, RequestError } = require('../errors/customError')
 const DB = require("../db.config")
 const User = DB.User
@@ -15,14 +14,12 @@ exports.getUser = async (req, res, next) => {
     try {
         const userId = parseInt(req.params.id)
         if(!userId) {
-            // return res.json(400).json({ message: "Missing Parameter"})
             throw new RequestError("Missing Parameter")
         }
 
         const user = await User.findOne({ where: { id: userId }, raw: true, attributes: ["id", "username", "email"] })
         if((user === null)) {
-            // return res.status(404).json({ message: "This user does not exist !"})
-            throw new UserError("This user does not exist !", 0)
+            throw new UserError("This user does not exist !")
         }
 
         return res.json({data: user})
@@ -36,15 +33,13 @@ exports.addUser = async ( req, res, next) => {
     try {
         const {username, email, password } = req.body
         if(!username || !email || !password) {
-            // return res.status(400).json({ message: "Missing Data" })
             throw new RequestError("Missing Data")
         }
 
         const user = await User.findOne({where: { email: email}, raw: true})
 
         if(user !== null) {
-            // return res.status(409).json({ message: `The email ${email} already exists`})
-            throw new UserError(`The email ${email} already exists`,1)
+            throw new UserError(`The user ${username} already exists`, 1)
         }
 
         userCrypted = await User.create(req.body)
@@ -60,15 +55,13 @@ exports.updateUser = async (req, res, next) => {
         const user_Id = req.auth.user_Id
         let userId = parseInt(req.params.id)
         if(!userId) {
-            // return res.status(400).json({ message: "Missing parameter" })
             throw new RequestError("Missing parameter" )
         }
 
         const user = await User.findOne({ where: {id: userId}, raw: true})
 
         if(user === null) {
-            // return res.status(404).json({ message: "This user does not exist !"})
-            throw new UserError("This user does not exist !",0)
+            throw new UserError("This user does not exist !")
         }
         
         const isAdmin = req.auth.roles.some((role)=> {
@@ -81,7 +74,7 @@ exports.updateUser = async (req, res, next) => {
             await User.update(req.body, { where: { id: userId } })
             return res.json({ message: "User Updated" })
         }
-        return res.json(404).json({ message: "You don't have the right for this"})
+        throw new UserError("You don't have the right for this")
 
     } catch(err) {
         next(err)
@@ -132,7 +125,7 @@ exports.deleteUser = async (req, res, next) => {
             await User.destroy({ where: {id: userId}, force: true})
             return res.status(204).json({})
         }
-        return res.json(404).json({ message: "You don't have the right for this"})
+        throw new UserError("You don't have the right for this")
         
     } catch(err) { next(err) }
 }
