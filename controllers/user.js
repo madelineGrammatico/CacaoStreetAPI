@@ -1,5 +1,4 @@
-
-const {UserError, RequestError, UserError } = require('../errors/customError')
+const {UserError, RequestError } = require('../errors/customError')
 const DB = require("../db.config")
 const User = DB.User
 const bcrypt = require('bcrypt')
