@@ -36,10 +36,13 @@ exports.addUser = async ( req, res, next) => {
             throw new RequestError("Missing Data")
         }
 
-        const user = await User.findOne({where: { email: email}, raw: true})
-
+        let user = await User.findOne({where: { username: username }})
         if(user !== null) {
-            throw new UserError(`The user ${username} already exists`, 1)
+            throw new UserError(`The user ${ username } already exists`, 1)
+        }
+        user = await User.findOne({where: { email: email }})
+        if(user !== null) {
+            throw new UserError(`The user ${ email } already exists`, 1)
         }
 
         userCrypted = await User.create(req.body)
