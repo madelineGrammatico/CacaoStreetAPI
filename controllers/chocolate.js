@@ -27,6 +27,34 @@ exports.getChocolate = async (req, res, next) => {
 
     } catch(err) { next(err) }
 }
+exports.getChocolateComment = async (req, res, next) => {
+    try {
+        const chocolateId = parseInt(req.params.id)
+        if(!chocolateId) {
+            throw new RequestError("Missing Parameter")
+        }
+
+        const chocolate = await Chocolate.findOne({ 
+            where: { id: chocolateId },
+            include: [
+                { model: DB.Comment, as: "Comment" }, 
+                { model: DB.Rating, through: {
+                    model: DB.Chocolate_Rating,
+                    where: {
+                        chocolateId: chocolateId
+                    }
+                }}
+            ]
+        })
+        if((chocolate === null)) {
+            throw new ChocolateError("This chocolate does not exist !")
+        }
+        // const user = await DB.User.findOne({ where: {id: user_Id}, raw: true})
+        return res.json({data: chocolate})
+
+    } catch(err) { next(err) }
+}
+
 
 exports.addChocolate = async ( req, res, next) => {
     try {
