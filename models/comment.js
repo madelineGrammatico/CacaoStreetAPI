@@ -20,10 +20,3 @@ module.exports = (sequelize) => {
     })
     return Comment
 }
-
-
-// User.sync()
-// User.sync({ force: true })
-// User.sync({ alter: true })
-
-// module.exports = Comment
