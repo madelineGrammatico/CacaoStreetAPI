@@ -88,12 +88,14 @@ db.Reporting.belongsTo(db.Chocolate,{
 })
 
 db.Comment.hasOne(db.Rating, {
-    foreignKey: "comment_Id",
-    as: "Comment"
+    // foreignKey: "comment_Id",
+    // as: "Comment",
+    // allowNull:true
 })
 db.Rating.belongsTo(db.Comment, {
     foreignKey: "comment_Id",
-    as: "Rating"
+    as: "Rating",
+    allowNull:true
 })
 
 
