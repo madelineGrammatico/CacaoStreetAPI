@@ -93,7 +93,7 @@ db.Comment.hasOne(db.Rating, {
     // allowNull:true
 })
 db.Rating.belongsTo(db.Comment, {
-    foreignKey: "comment_Id",
+    // foreignKey: "comment_Id",
     as: "Rating",
     allowNull:true
 })

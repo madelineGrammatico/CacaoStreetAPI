@@ -8,6 +8,7 @@ const router = express.Router()
 router.get('/', chocolateCtrl.getAllChocolates)
 
 router.get('/:id', chocolateCtrl.getChocolate)
+
 router.get('/:id/comments', chocolateCtrl.getChocolateComment)
 
 router.post('', [authJwt.verifyToken], chocolateCtrl.addChocolate)
