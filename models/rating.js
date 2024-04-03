@@ -18,10 +18,10 @@ module.exports = (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        comment_Id: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        }
+        // comment_Id: {
+        //     type: DataTypes.INTEGER,
+        //     allowNull: true
+        // }
         
     })
     return Rating

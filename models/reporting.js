@@ -26,10 +26,3 @@ module.exports = (sequelize) => {
     })
     return Reporting
 }
-
-
-// User.sync()
-// User.sync({ force: true })
-// User.sync({ alter: true })
-
-// module.exports = Comment

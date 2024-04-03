@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize')
-// const DB = require("../db.config")
+
 module.exports = (sequelize) => {
     const Comment = sequelize.define("Comment", {
         id: {
@@ -20,10 +20,3 @@ module.exports = (sequelize) => {
     })
     return Comment
 }
-
-
-// User.sync()
-// User.sync({ force: true })
-// User.sync({ alter: true })
-
-// module.exports = Comment
