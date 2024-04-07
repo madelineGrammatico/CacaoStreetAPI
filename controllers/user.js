@@ -70,11 +70,14 @@ exports.updateUser = async (req, res, next) => {
         const isAdmin = req.auth.roles.some((role)=> {
             return role === "admin"})
         if (isAdmin || user.id === user_Id ) {
-            if(req.body.password) {
-                const hash = await bcrypt.hash(req.body.password, parseInt(process.env.BCRYPT_SALT_ROUND))
-                req.body.password = hash
-            }
-            await User.update(req.body, { where: { id: userId } })
+            const userUpdated = {}
+            req.body.username? userUpdated.username = req.body.username : null
+            req.body.email? userUpdated.email = req.body.email : null
+            // if(req.body.password) {
+            //     const hash = await bcrypt.hash(req.body.password, parseInt(process.env.BCRYPT_SALT_ROUND))
+            //     req.body.password = hash
+            // }
+            await User.update(userUpdated, { where: { id: userId } })
             return res.json({ message: "User Updated" })
         }
         throw new UserError("You don't have the right for this")
