@@ -87,6 +87,48 @@ exports.updateUser = async (req, res, next) => {
     }
 }
 
+exports.updateUserPassword = async (req, res, next) => {
+    try {
+        const user_Id = req.auth.user_Id
+        let userId = parseInt(req.params.id)
+        const { oldPassword, newPassword } = req.body
+        if(!userId || !oldPassword || !newPassword) {
+            throw new RequestError("Missing parameter" )
+        }
+
+        const user = await User.findOne({ where: {id: userId}, raw: true})
+
+        if(user === null) {
+            throw new UserError("This user does not exist !")
+        }
+        
+        const isAdmin = req.auth.roles.some((role)=> {
+            return role === "admin"
+        })
+        if (isAdmin || user.id === user_Id ) {
+            
+            const passwordIsValid = bcrypt.compareSync(
+                oldPassword,
+                user.password
+            )
+            if (!passwordIsValid) {
+                throw new UserError("Wrong password !",1)
+            }
+
+            const userUpdated = {}
+            const hash = await bcrypt.hash(newPassword, parseInt(process.env.BCRYPT_SALT_ROUND))
+            userUpdated.password = hash
+            await User.update(userUpdated, { where: { id: userId } })
+            return res.json({ message: "User Updated" })
+           
+        }
+        throw new UserError("You don't have the right for this",1)
+
+    } catch(err) {
+        next(err)
+    }
+}
+
 exports.untrashUser = async ( req, res, next) => {
     try {
         let userId = parseInt(req.params.id)
