@@ -27,6 +27,11 @@ module.exports = function(app) {
     [authJwt.verifyToken],
     userCtrl.updateUser
   )
+  app.patch(
+    "/api/users/:id/newpassword",
+    [authJwt.verifyToken],
+    userCtrl.updateUserPassword
+  )
     
   app.patch(
     "/api/users/untrash/:id",
