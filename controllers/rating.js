@@ -75,8 +75,8 @@ exports.addRating = async ( req, res, next,) => {
         const chocolate_Id= parseInt(req.body.chocolate_Id)
         const rate = parseInt(req.body.rate)
         const comment_Id = parseInt(req.body.comment_Id)
-        
-        if( !rate || !user_Id) {
+        console.log("comment_Id : ", comment_Id)
+        if( !rate || !user_Id ) {
             throw new RequestError("Missing Data")
         }
         const chocolate = await Chocolate.findByPk(chocolate_Id)
@@ -88,11 +88,11 @@ exports.addRating = async ( req, res, next,) => {
             rate, 
             user_Id: user_Id,
             chocolate_Id, 
-            comment_Id: comment_Id
         }
+        comment_Id ? ratingWithUser.comment_Id = comment_Id : null
         const rating = await Rating.create(ratingWithUser)
         rating.addChocolate(chocolate)
-
+        comment_Id ? rating.addComment(comment) : null
         const averageRating = await calculateAverage(chocolate_Id)
         req.body = {
             averageRating: averageRating,
