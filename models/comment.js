@@ -15,7 +15,10 @@ module.exports = (sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        
+        rating_Id: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        }
         
     })
     return Comment
