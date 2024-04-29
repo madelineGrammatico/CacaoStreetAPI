@@ -1,3 +1,4 @@
+const { where } = require("sequelize")
 const DB = require("../db.config")
 const Chocolate = DB.Chocolate
 const { ChocolateError, RequestError, UserError } = require('../errors/customError')
@@ -37,13 +38,22 @@ exports.getChocolateComment = async (req, res, next) => {
         const chocolate = await Chocolate.findOne({ 
             where: { id: chocolateId },
             include: [
-                { model: DB.Comment, as: "Comment" }, 
-                { model: DB.Rating, through: {
-                    model: DB.Chocolate_Rating,
+                { 
+                    model: DB.Comment,
+                    as: "Comment",
                     where: {
                         chocolateId: chocolateId
                     }
-                }}
+                },
+                { 
+                    model: DB.Rating,
+                    through: {
+                        model: DB.Chocolate_Rating,
+                        where: {
+                            chocolateId: chocolateId
+                        }
+                    }
+                }
             ]
         })
         if((chocolate === null)) {
