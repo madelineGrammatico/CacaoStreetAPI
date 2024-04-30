@@ -1,5 +1,6 @@
 const { Sequelize} = require('sequelize')
 // const { DataTypes } = require('sequelize')
+const bcrypt = require('bcrypt')
 
 let sequelize = new Sequelize(
     process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
@@ -86,21 +87,31 @@ db.Reporting.belongsTo(db.Chocolate,{
     foreignKey: "chocolate_Id",
     as:"Chocolate"
 })
-
-db.Comment.hasOne(db.Rating, {
-    // foreignKey: "comment_Id",
+db.Comment_Rating = sequelize.define("Comment_Rating", {}, { timestamps: false });
+db.Comment.belongsToMany(db.Rating
+    , {
+    // foreignKey: { name: "comment_Id_test"},
     // as: "Comment",
     // allowNull:true
-})
-db.Rating.belongsTo(db.Comment, {
-    // foreignKey: "comment_Id",
-    as: "Rating",
-    allowNull:true
+    through: db.Comment_Rating
+    }
+)
+db.Rating.belongsToMany(db.Comment, {
+    through: db.Comment_Rating
 })
 
+// db.Rating.hasOne(db.Comment
+//     , {
+//     // foreignKey: { name: "rating_Id_test"},
+//     // as: "Rating",
+//     // allowNull:true
+//     through: db.Comment_Rating
+//     }
+// )
+// db.Comment.belongsTo(db.Rating)
 
 //delete for production
-function initial() {
+async function  initial() {
     db.role.create({
         id: 1,
         name: "user"
@@ -109,6 +120,21 @@ function initial() {
     db.role.create({
         id: 2,
         name: "admin"
+    })
+    await db.User.create({
+        username: "anAdmin",
+        email: "anAdmin@gmail.com",
+        password: bcrypt.hashSync("password", 8),
+        roles: ["user", "admin"]
+    })
+    db.Chocolate.create({
+        "name": "L'Atelier",
+        "addressShop": "16 Av. du Maréchal Foch, 91230 Montgeron, France",
+        "position": "(48.71059349999999, 2.4651571)",
+        "user_Id": 1,
+        "allowed": false,
+        "price": 5,
+        "hours": "[\"lun\"]",
     })
 }
 // db.sequelize.sync({force: true}).then(() => {
